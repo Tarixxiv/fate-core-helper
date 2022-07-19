@@ -11,7 +11,7 @@ public class SkillRandomizer {
     int currentSkillIndex = 0;
 
     SkillRandomizer() throws FileNotFoundException {
-        Scanner s = new Scanner(new File("src/main/data/Skills"));
+        Scanner s = new Scanner(new File("src/main/data/Skills"),"UTF-8");
         skills = new ArrayList<String>();
         while (s.hasNextLine()){
             skills.add(s.nextLine());

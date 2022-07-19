@@ -15,15 +15,26 @@ public class SkillPointDistributor {
     public SkillPointDistributor() throws FileNotFoundException {
     }
 
-    void distributeSkillPoints(){
+    private void clearSkillPyramid(){
         skillPyramid = new ArrayList();
         ArrayList<String> skills = new ArrayList<String>();
-
         for (int i = 0; i < skillLevelTierWidth; i++) {
             skillPyramid.add(new ArrayList<String>());
         }
-        int skillPointsLeft = skillPoints;
+    }
 
+    private void sortSkillPyramid(){
+        Collections.sort(skillPyramid, new Comparator<ArrayList<String>>() {
+            @Override
+            public int compare(ArrayList<String> o1, ArrayList<String> o2) {
+                return o2.size() - o1.size();
+            }
+        });
+    }
+
+    void distributeSkillPoints(){
+        int skillPointsLeft = skillPoints;
+        clearSkillPyramid();
         while (skillPointsLeft > 0){
             ArrayList<Integer> possibleSlots = new ArrayList<Integer>();
             for (int i = 0; i < skillLevelTierWidth; i++) {
@@ -38,12 +49,7 @@ public class SkillPointDistributor {
             skillPointsLeft -= (skillPyramid.get(chosenSkillColumn).size() + 1);
             skillPyramid.get(chosenSkillColumn).add(skillRandomizer.nextSkill());
         }
-        Collections.sort(skillPyramid, new Comparator<ArrayList<String>>() {
-            @Override
-            public int compare(ArrayList<String> o1, ArrayList<String> o2) {
-                return o2.size() - o1.size();
-            }
-        });
+        sortSkillPyramid();
     }
 
     void printPyramid(){

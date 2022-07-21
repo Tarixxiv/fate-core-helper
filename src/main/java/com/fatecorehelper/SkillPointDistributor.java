@@ -5,19 +5,16 @@ import java.util.*;
 
 public class SkillPointDistributor {
     Random random = new Random();
-    SkillRandomizer skillRandomizer = new SkillRandomizer();
+    SkillRandomizer skillRandomizer;
     int skillPoints = 20;
     int skillPointsLeft;
-    private final int maxSkillLevel = 5;
-    int skillPyramidWidth = 5;
+    final int maxPyramidHeight = 5;
+    int pyramidWidth = 5;
     ArrayList<ArrayList<String>> skillPyramid;
-
-    public SkillPointDistributor() throws FileNotFoundException {
-    }
 
     private void clearSkillPyramid(){
         skillPyramid = new ArrayList();
-        for (int i = 0; i < skillPyramidWidth; i++) {
+        for (int i = 0; i < pyramidWidth; i++) {
             skillPyramid.add(new ArrayList<String>());
         }
     }
@@ -30,13 +27,14 @@ public class SkillPointDistributor {
             }
         });
     }
-    void distributeSkillPoints(){
+    void distributeSkillPoints() throws FileNotFoundException {
+        skillRandomizer = new SkillRandomizer();
         skillPointsLeft = skillPoints;
         clearSkillPyramid();
         while (skillPointsLeft > 0){
             ArrayList<Integer> possibleSlots = new ArrayList<Integer>();
-            for (int i = 0; i < skillPyramidWidth; i++) {
-                if (skillPyramid.get(i).size() < maxSkillLevel && (skillPyramid.get(i).size() + 1) <= skillPointsLeft){
+            for (int i = 0; i < pyramidWidth; i++) {
+                if (skillPyramid.get(i).size() < maxPyramidHeight && (skillPyramid.get(i).size() + 1) <= skillPointsLeft){
                     possibleSlots.add(i);
                 }
             }

@@ -1,6 +1,5 @@
 package com.fatecorehelper;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
@@ -8,6 +7,7 @@ public class SkillPointDistributor {
     Random random = new Random();
     SkillRandomizer skillRandomizer = new SkillRandomizer();
     int skillPoints = 20;
+    int skillPointsLeft;
     private final int maxSkillLevel = 5;
     int skillLevelTierWidth = 5;
     ArrayList<ArrayList<String>> skillPyramid;
@@ -17,28 +17,27 @@ public class SkillPointDistributor {
 
     private void clearSkillPyramid(){
         skillPyramid = new ArrayList();
-        ArrayList<String> skills = new ArrayList<String>();
         for (int i = 0; i < skillLevelTierWidth; i++) {
             skillPyramid.add(new ArrayList<String>());
         }
     }
 
     private void sortSkillPyramid(){
-        Collections.sort(skillPyramid, new Comparator<ArrayList<String>>() {
+        skillPyramid.sort(new Comparator<ArrayList<String>>() {
             @Override
             public int compare(ArrayList<String> o1, ArrayList<String> o2) {
                 return o2.size() - o1.size();
             }
         });
     }
-
+    //TODO fix negative SP left
     void distributeSkillPoints(){
-        int skillPointsLeft = skillPoints;
+        skillPointsLeft = skillPoints;
         clearSkillPyramid();
         while (skillPointsLeft > 0){
             ArrayList<Integer> possibleSlots = new ArrayList<Integer>();
             for (int i = 0; i < skillLevelTierWidth; i++) {
-                if (skillPyramid.get(i).size() < maxSkillLevel && skillPyramid.get(i).size() + 1 <= skillPointsLeft){
+                if (skillPyramid.get(i).size() < maxSkillLevel && (skillPyramid.get(i).size() + 1) <= skillPointsLeft){
                     possibleSlots.add(i);
                 }
             }
@@ -46,6 +45,7 @@ public class SkillPointDistributor {
                 break;
             }
             int chosenSkillColumn = random.nextInt(possibleSlots.size());
+
             skillPointsLeft -= (skillPyramid.get(chosenSkillColumn).size() + 1);
             skillPyramid.get(chosenSkillColumn).add(skillRandomizer.nextSkill());
         }

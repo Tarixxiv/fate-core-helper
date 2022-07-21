@@ -9,7 +9,7 @@ public class SkillPointDistributor {
     int skillPoints = 20;
     int skillPointsLeft;
     private final int maxSkillLevel = 5;
-    int skillLevelTierWidth = 5;
+    int skillPyramidWidth = 5;
     ArrayList<ArrayList<String>> skillPyramid;
 
     public SkillPointDistributor() throws FileNotFoundException {
@@ -17,7 +17,7 @@ public class SkillPointDistributor {
 
     private void clearSkillPyramid(){
         skillPyramid = new ArrayList();
-        for (int i = 0; i < skillLevelTierWidth; i++) {
+        for (int i = 0; i < skillPyramidWidth; i++) {
             skillPyramid.add(new ArrayList<String>());
         }
     }
@@ -30,13 +30,12 @@ public class SkillPointDistributor {
             }
         });
     }
-    //TODO fix negative SP left
     void distributeSkillPoints(){
         skillPointsLeft = skillPoints;
         clearSkillPyramid();
         while (skillPointsLeft > 0){
             ArrayList<Integer> possibleSlots = new ArrayList<Integer>();
-            for (int i = 0; i < skillLevelTierWidth; i++) {
+            for (int i = 0; i < skillPyramidWidth; i++) {
                 if (skillPyramid.get(i).size() < maxSkillLevel && (skillPyramid.get(i).size() + 1) <= skillPointsLeft){
                     possibleSlots.add(i);
                 }
@@ -44,26 +43,10 @@ public class SkillPointDistributor {
             if (possibleSlots.isEmpty()){
                 break;
             }
-            int chosenSkillColumn = random.nextInt(possibleSlots.size());
-
+            int chosenSkillColumn = possibleSlots.get(random.nextInt(possibleSlots.size()));
             skillPointsLeft -= (skillPyramid.get(chosenSkillColumn).size() + 1);
             skillPyramid.get(chosenSkillColumn).add(skillRandomizer.nextSkill());
         }
         sortSkillPyramid();
-    }
-
-    void printPyramid(){
-        for (int i = maxSkillLevel - 1; i >= 0; i--) {
-            for (ArrayList<String> skillColumn:
-                    skillPyramid) {
-                if(skillColumn.size() <= i){
-                    System.out.print("    ");
-                }else{
-                    System.out.print(skillColumn.get(i));
-                    System.out.print(" ");
-                }
-            }
-            System.out.println();
-        }
     }
 }

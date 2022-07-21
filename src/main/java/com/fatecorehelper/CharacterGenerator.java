@@ -28,8 +28,6 @@ public class CharacterGenerator extends Application {
         ArrayList<String> aspects = aspectRandomizer.generateAspects();
         System.out.println(aspects);
         skillPointDistributor.distributeSkillPoints();
-        skillPointDistributor.printPyramid();
-        //Creating a GridPane container
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
         grid.setVgap(5);

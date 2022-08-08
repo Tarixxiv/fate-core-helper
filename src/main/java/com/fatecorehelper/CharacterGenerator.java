@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class CharacterGenerator extends Application {
     AspectRandomizer aspectRandomizer = new AspectRandomizer();
     SkillPointDistributor skillPointDistributor = new SkillPointDistributor();
 
-    public CharacterGenerator() throws FileNotFoundException {
+    public CharacterGenerator() {
     }
 
     @Override
@@ -60,6 +61,8 @@ public class CharacterGenerator extends Application {
         }
         vbox.getChildren().add(grid);
         vbox.getChildren().add(new Label("SP left after generation : " + skillPointDistributor.skillPointsLeft));
+        Button button = new Button("Generate");
+        vbox.getChildren().add(button);
         vbox.setPadding(new Insets(30));
         Scene scene = new Scene(vbox, 1000,600);
         stage.setScene(scene);

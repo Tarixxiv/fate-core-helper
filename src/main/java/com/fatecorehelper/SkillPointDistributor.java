@@ -1,6 +1,7 @@
 package com.fatecorehelper;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class SkillPointDistributor {
@@ -27,7 +28,7 @@ public class SkillPointDistributor {
             }
         });
     }
-    void distributeSkillPoints() throws FileNotFoundException {
+    void distributeSkillPoints() throws IOException {
         skillRandomizer = new SkillRandomizer();
         skillPointsLeft = skillPoints;
         clearSkillPyramid();

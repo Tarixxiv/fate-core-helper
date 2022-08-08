@@ -1,6 +1,7 @@
 package com.fatecorehelper;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class AspectRandomizer {
         int count = 0;
         Random r = new Random();
         FileInputStream fis = new FileInputStream(filePath);
-        Scanner sc = new Scanner(fis);
+        Scanner sc = new Scanner(fis, StandardCharsets.UTF_8);
         while(sc.hasNextLine()){
             if (r.nextInt(count+1) == count){
                 output = sc.nextLine();
@@ -33,7 +34,7 @@ public class AspectRandomizer {
         ArrayList<String> fileBuffer = new ArrayList<String>();
         Random r = new Random();
         FileInputStream fis = new FileInputStream(filePath);
-        Scanner sc = new Scanner(fis);
+        Scanner sc = new Scanner(fis, StandardCharsets.UTF_8);
         while(sc.hasNextLine()){
             fileBuffer.add(sc.nextLine());
         }
@@ -57,8 +58,8 @@ public class AspectRandomizer {
         ArrayList<String> output = new ArrayList<String>();
         output.add(reservoirSampleFileLines("src/main/data/HighConcepts"));
         output.add(reservoirSampleFileLines("src/main/data/Troubles"));
-        output.add(reservoirSampleFileLines("src/main/data/Relations"));
         output.addAll(getUniqueRandomFileLines("src/main/data/GenericAspects",2));
+        output.add(reservoirSampleFileLines("src/main/data/Relations"));
         return output;
     }
 

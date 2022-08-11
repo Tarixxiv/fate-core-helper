@@ -1,8 +1,9 @@
 package com.fatecorehelper;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Random;
 
 public class SkillPointDistributor {
     Random random = new Random();
@@ -14,14 +15,14 @@ public class SkillPointDistributor {
     ArrayList<ArrayList<String>> skillPyramid;
 
     private void clearSkillPyramid(){
-        skillPyramid = new ArrayList();
+        skillPyramid = new ArrayList<>();
         for (int i = 0; i < pyramidWidth; i++) {
-            skillPyramid.add(new ArrayList<String>());
+            skillPyramid.add(new ArrayList<>());
         }
     }
 
     private void sortSkillPyramid(){
-        skillPyramid.sort(new Comparator<ArrayList<String>>() {
+        skillPyramid.sort(new Comparator<>() {
             @Override
             public int compare(ArrayList<String> o1, ArrayList<String> o2) {
                 return o2.size() - o1.size();
@@ -33,7 +34,7 @@ public class SkillPointDistributor {
         skillPointsLeft = skillPoints;
         clearSkillPyramid();
         while (skillPointsLeft > 0){
-            ArrayList<Integer> possibleSlots = new ArrayList<Integer>();
+            ArrayList<Integer> possibleSlots = new ArrayList<>();
             for (int i = 0; i < pyramidWidth; i++) {
                 if (skillPyramid.get(i).size() < maxPyramidHeight && (skillPyramid.get(i).size() + 1) <= skillPointsLeft){
                     possibleSlots.add(i);

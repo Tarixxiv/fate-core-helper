@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class AspectRandomizer {
 
-    int genericAspectCount = 2;
-
+    final static int genericAspectCount = 2;
+    final static int aspectCount = genericAspectCount + 3;
 
     public String reservoirSampleFileLines(String filePath) throws FileNotFoundException {
         String output = "";
@@ -31,7 +31,7 @@ public class AspectRandomizer {
     }
 
     public ArrayList<String> getUniqueRandomFileLines(String filePath, int outputLineCount) throws FileNotFoundException {
-        ArrayList<String> fileBuffer = new ArrayList<String>();
+        ArrayList<String> fileBuffer = new ArrayList<>();
         Random r = new Random();
         FileInputStream fis = new FileInputStream(filePath);
         Scanner sc = new Scanner(fis, StandardCharsets.UTF_8);
@@ -44,7 +44,7 @@ public class AspectRandomizer {
             throw new IllegalArgumentException("outputLineCount is greater than line count in file");
         }
 
-        ArrayList<String> output = new ArrayList<String>();
+        ArrayList<String> output = new ArrayList<>();
 
         for (int i = 0; i < outputLineCount; i++) {
             int randomIndex = r.nextInt(fileBuffer.size());
@@ -55,7 +55,7 @@ public class AspectRandomizer {
     }
 
     public ArrayList<String> generateAspects() throws FileNotFoundException {
-        ArrayList<String> output = new ArrayList<String>();
+        ArrayList<String> output = new ArrayList<>();
         output.add(reservoirSampleFileLines("src/main/data/HighConcepts"));
         output.add(reservoirSampleFileLines("src/main/data/Troubles"));
         output.addAll(getUniqueRandomFileLines("src/main/data/GenericAspects",2));
@@ -63,4 +63,7 @@ public class AspectRandomizer {
         return output;
     }
 
+    public int getAspectCount() {
+        return aspectCount;
+    }
 }

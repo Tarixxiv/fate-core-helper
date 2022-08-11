@@ -1,7 +1,6 @@
 package com.fatecorehelper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class SkillRandomizer {
 
     SkillRandomizer() throws IOException {
         Scanner s = new Scanner(new File("src/main/data/Skills"), StandardCharsets.UTF_8);
-        skills = new ArrayList<String>();
+        skills = new ArrayList<>();
         while (s.hasNextLine()){
             skills.add(s.nextLine());
         }

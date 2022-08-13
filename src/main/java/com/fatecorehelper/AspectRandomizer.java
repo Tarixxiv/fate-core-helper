@@ -12,25 +12,10 @@ public class AspectRandomizer {
     final static int genericAspectCount = 2;
     final static int aspectCount = genericAspectCount + 3;
 
-    public String reservoirSampleFileLines(String filePath) throws FileNotFoundException {
-        String output = "";
-        int count = 0;
-        Random r = new Random();
-        FileInputStream fis = new FileInputStream(filePath);
-        Scanner sc = new Scanner(fis, StandardCharsets.UTF_8);
-        while(sc.hasNextLine()){
-            if (r.nextInt(count+1) == count){
-                output = sc.nextLine();
-            }else{
-                sc.nextLine();
-            }
-            count++;
-        }
-        sc.close();
-        return output;
-    }
+    int highConceptFileLineCount, troubleAspectFileCount, genericAspectFileLineCount, relationFileLineCount;
 
-    public ArrayList<String> getUniqueRandomFileLines(String filePath, int outputLineCount) throws FileNotFoundException {
+
+    public ArrayList<String> getUniqueRandomFileLines(String filePath, int outputLineCount, ArrayList<String> excludedEntries) throws FileNotFoundException {
         ArrayList<String> fileBuffer = new ArrayList<>();
         Random r = new Random();
         FileInputStream fis = new FileInputStream(filePath);
@@ -48,18 +33,25 @@ public class AspectRandomizer {
 
         for (int i = 0; i < outputLineCount; i++) {
             int randomIndex = r.nextInt(fileBuffer.size());
+            while (excludedEntries.contains(fileBuffer.get(randomIndex))){
+                fileBuffer.remove(randomIndex);
+                randomIndex = r.nextInt(fileBuffer.size());
+                if (outputLineCount - i > fileBuffer.size()){
+                    throw new IllegalArgumentException("outputLineCount is greater than line count in file");
+                }
+            }
             output.add(fileBuffer.get(randomIndex));
             fileBuffer.remove(randomIndex);
         }
         return output;
     }
 
-    public ArrayList<String> generateAspects() throws FileNotFoundException {
+    public ArrayList<String> generateAspects(ArrayList<String> excludedEntries) throws FileNotFoundException {
         ArrayList<String> output = new ArrayList<>();
-        output.add(reservoirSampleFileLines("src/main/data/HighConcepts"));
-        output.add(reservoirSampleFileLines("src/main/data/Troubles"));
-        output.addAll(getUniqueRandomFileLines("src/main/data/GenericAspects",2));
-        output.add(reservoirSampleFileLines("src/main/data/Relations"));
+        output.add(getUniqueRandomFileLines("src/main/data/HighConcepts",1,excludedEntries).get(0));
+        output.add(getUniqueRandomFileLines("src/main/data/Troubles",1,excludedEntries).get(0));
+        output.addAll(getUniqueRandomFileLines("src/main/data/GenericAspects",2,excludedEntries));
+        output.add(getUniqueRandomFileLines("src/main/data/Relations",1,excludedEntries).get(0));
         return output;
     }
 

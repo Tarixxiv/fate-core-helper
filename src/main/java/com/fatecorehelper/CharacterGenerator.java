@@ -21,12 +21,15 @@ public class CharacterGenerator extends Application {
     SkillPointDistributor skillPointDistributor = new SkillPointDistributor();
     ArrayList<CheckBox> aspectCheckboxes = new ArrayList<>();
     ArrayList<TextField> aspectFields = new ArrayList<>();
+    ArrayList<CheckBox> skillColumnCheckboxes = new ArrayList<>();
+
+    ArrayList<String> disabledAspectTextFieldInput = new ArrayList<>();
 
     public CharacterGenerator() {
     }
 
     public void generateCharacter() throws FileNotFoundException {
-        ArrayList<String> aspects = aspectRandomizer.generateAspects();
+        ArrayList<String> aspects = aspectRandomizer.generateAspects(disabledAspectTextFieldInput);
         for (int i = 0; i < aspectCheckboxes.size(); i++) {
             if (!aspectCheckboxes.get(i).isSelected()){
                 aspectFields.get(i).setText(aspects.get(i));
@@ -34,13 +37,21 @@ public class CharacterGenerator extends Application {
         }
     }
 
+
     void createAspectFieldsAndCheckboxes(VBox vbox){
         for (int i = 0; i < aspectRandomizer.getAspectCount(); i++) {
             HBox hbox = new HBox(8);
             TextField textField = new TextField();
             textField.setPrefWidth(400);
             CheckBox checkBox = new CheckBox();
-            checkBox.setOnAction(event -> textField.setDisable(checkBox.isSelected()));
+            checkBox.setOnAction(event -> {
+                textField.setDisable(checkBox.isSelected());
+                if (checkBox.isSelected()){
+                    disabledAspectTextFieldInput.add(textField.getText());
+                }else{
+                    disabledAspectTextFieldInput.remove(textField.getText());
+                }
+            });
             hbox.getChildren().addAll(checkBox,textField);
             aspectCheckboxes.add(checkBox);
             aspectFields.add(textField);
@@ -57,17 +68,23 @@ public class CharacterGenerator extends Application {
         int maxPyramidHeight = skillPointDistributor.maxPyramidHeight;
         for (int i = 0; i < maxPyramidHeight; i++) {
             Label label = new Label("+" + (maxPyramidHeight - i));
-            grid.add(label,0,i);
+            grid.add(label,0,i + 1);
         }
         for (int i = 0; i < skillPointDistributor.skillPyramid.size(); i++) {
+            ArrayList<TextField> skillColumn = new ArrayList<>();
+            SkillColumnCheckbox columnCheckbox = new SkillColumnCheckbox(skillColumn);
+            skillColumnCheckboxes.add(columnCheckbox);
+            grid.add(columnCheckbox,i + 1,0);
             for (int j = 0; j < maxPyramidHeight; j++) {
                 HBox hbox = new HBox(8);
                 String text = "";
                 if (skillPointDistributor.skillPyramid.get(i).size() > maxPyramidHeight - j - 1){
                     text = skillPointDistributor.skillPyramid.get(i).get(maxPyramidHeight - j - 1);
                 }
-                hbox.getChildren().addAll(new CheckBox(), new TextField(text));
-                grid.add(hbox,i + 1,j);
+                TextField textField = new TextField(text);
+                skillColumn.add(textField);
+                hbox.getChildren().addAll(textField);
+                grid.add(hbox,i + 1,j + 1);
             }
         }
         vbox.getChildren().add(grid);

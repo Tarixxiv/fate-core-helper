@@ -11,7 +11,7 @@ public class SkillPointDistributor {
     int skillPoints = 20;
     int skillPointsLeft;
     final int maxPyramidHeight = 5;
-    int pyramidWidth = 5;
+    final int pyramidWidth = 5;
     ArrayList<ArrayList<String>> skillPyramid;
 
     private void clearSkillPyramid(){

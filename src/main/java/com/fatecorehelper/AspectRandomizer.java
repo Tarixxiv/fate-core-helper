@@ -12,23 +12,24 @@ public class AspectRandomizer {
     final static int genericAspectCount = 2;
     final static int aspectCount = genericAspectCount + 3;
 
-
-    public ArrayList<String> getUniqueRandomFileLines(String filePath, int outputLineCount, ArrayList<String> excludedEntries) throws FileNotFoundException {
+    private ArrayList<String> parseFileLinesToArray(String filePath) throws FileNotFoundException{
         ArrayList<String> fileBuffer = new ArrayList<>();
-        Random r = new Random();
         FileInputStream fis = new FileInputStream(filePath);
         Scanner sc = new Scanner(fis, StandardCharsets.UTF_8);
         while(sc.hasNextLine()){
             fileBuffer.add(sc.nextLine());
         }
         sc.close();
+        return fileBuffer;
+    }
 
+    public ArrayList<String> getUniqueRandomFileLines(String filePath, int outputLineCount, ArrayList<String> excludedEntries) throws FileNotFoundException {
+        ArrayList<String> fileBuffer = parseFileLinesToArray(filePath);
         if (outputLineCount > fileBuffer.size()){
             throw new IllegalArgumentException("outputLineCount is greater than line count in file");
         }
-
+        Random r = new Random();
         ArrayList<String> output = new ArrayList<>();
-
         for (int i = 0; i < outputLineCount; i++) {
             int randomIndex = r.nextInt(fileBuffer.size());
             while (excludedEntries.contains(fileBuffer.get(randomIndex)) || fileBuffer.get(randomIndex).isBlank()){

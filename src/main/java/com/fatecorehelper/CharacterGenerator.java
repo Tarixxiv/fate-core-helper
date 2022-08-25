@@ -19,11 +19,13 @@ import java.util.ArrayList;
 public class CharacterGenerator extends Application {
     AspectRandomizer aspectRandomizer = new AspectRandomizer();
     SkillPointDistributor skillPointDistributor = new SkillPointDistributor();
+    Label skillPointsLeftLabel = new Label();
     ArrayList<CheckBox> aspectCheckboxes = new ArrayList<>();
     ArrayList<TextField> aspectFields = new ArrayList<>();
-    ArrayList<CheckBox> skillColumnCheckboxes = new ArrayList<>();
-
+    ArrayList<SkillColumn> skillColumns = new ArrayList<>();
     ArrayList<String> disabledAspectTextFieldInput = new ArrayList<>();
+
+    ArrayList<String> disabledSkillTextFieldInput = new ArrayList<>();
 
     public CharacterGenerator() {
     }
@@ -36,7 +38,6 @@ public class CharacterGenerator extends Application {
             }
         }
     }
-
 
     void createAspectFieldsAndCheckboxes(VBox vbox){
         for (int i = 0; i < aspectRandomizer.getAspectCount(); i++) {
@@ -70,11 +71,12 @@ public class CharacterGenerator extends Application {
             Label label = new Label("+" + (maxPyramidHeight - i));
             grid.add(label,0,i + 1);
         }
-        for (int i = 0; i < skillPointDistributor.skillPyramid.size(); i++) {
+        for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
             ArrayList<TextField> skillColumn = new ArrayList<>();
-            SkillColumnCheckbox columnCheckbox = new SkillColumnCheckbox(skillColumn);
-            skillColumnCheckboxes.add(columnCheckbox);
-            grid.add(columnCheckbox,i + 1,0);
+            CheckBox checkBox = new CheckBox();
+            SkillColumn columnCheckbox = new SkillColumn(skillColumn,checkBox);
+            skillColumns.add(columnCheckbox);
+            grid.add(checkBox,i + 1,0);
             for (int j = 0; j < maxPyramidHeight; j++) {
                 HBox hbox = new HBox(8);
                 String text = "";
@@ -87,8 +89,20 @@ public class CharacterGenerator extends Application {
                 grid.add(hbox,i + 1,j + 1);
             }
         }
+
+/*        for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
+            for (int j = 0; j < maxPyramidHeight; j++) {
+                String text = "";
+                if (skillPointDistributor.skillPyramid.get(i).size() > maxPyramidHeight - j - 1){
+                    text = skillPointDistributor.skillPyramid.get(i).get(maxPyramidHeight - j - 1);
+                }
+
+            }
+        }*/
+
         vbox.getChildren().add(grid);
-        vbox.getChildren().add(new Label("SP left after generation : " + skillPointDistributor.skillPointsLeft));
+        skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.skillPointsLeft);
+        vbox.getChildren().add(skillPointsLeftLabel);
     }
 
     @Override

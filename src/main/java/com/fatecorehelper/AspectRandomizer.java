@@ -12,8 +12,6 @@ public class AspectRandomizer {
     final static int genericAspectCount = 2;
     final static int aspectCount = genericAspectCount + 3;
 
-    int highConceptFileLineCount, troubleAspectFileCount, genericAspectFileLineCount, relationFileLineCount;
-
 
     public ArrayList<String> getUniqueRandomFileLines(String filePath, int outputLineCount, ArrayList<String> excludedEntries) throws FileNotFoundException {
         ArrayList<String> fileBuffer = new ArrayList<>();
@@ -33,7 +31,7 @@ public class AspectRandomizer {
 
         for (int i = 0; i < outputLineCount; i++) {
             int randomIndex = r.nextInt(fileBuffer.size());
-            while (excludedEntries.contains(fileBuffer.get(randomIndex))){
+            while (excludedEntries.contains(fileBuffer.get(randomIndex)) || fileBuffer.get(randomIndex).isBlank()){
                 fileBuffer.remove(randomIndex);
                 randomIndex = r.nextInt(fileBuffer.size());
                 if (outputLineCount - i > fileBuffer.size()){

@@ -19,6 +19,7 @@ public class SkillPointDistributor {
             skillPyramid.add(new ArrayList<>());
         }
     }
+
     private void clearSkillPyramid(ArrayList<Integer> excludedColumnIndexes){
         for (int i = 0; i < pyramidWidth; i++) {
             if (!excludedColumnIndexes.contains(i)){
@@ -27,13 +28,35 @@ public class SkillPointDistributor {
         }
     }
 
+    private ArrayList<ArrayList<String>> getNonDisabledColumns(ArrayList<Integer> disabledSkillColumnIndexes){
+        ArrayList<ArrayList<String>> output = new ArrayList<>();
+        for (int i = 0; i < skillPyramid.size(); i++) {
+            if (!disabledSkillColumnIndexes.contains(i)){
+                output.add(skillPyramid.get(i));
+            }
+        }
+        return output;
+    }
+
+    private void insertNonDisabledColumns(ArrayList<ArrayList<String>> nonDisabledColumns, ArrayList<Integer> disabledSkillColumnIndexes){
+        int j = 0;
+        for (int i = 0; i < skillPyramid.size(); i++) {
+            if (!disabledSkillColumnIndexes.contains(i)){
+                skillPyramid.set(i,nonDisabledColumns.get(j));
+                j++;
+            }
+        }
+    }
+
     private void sortSkillPyramid(ArrayList<Integer> disabledSkillColumnIndexes){
-        skillPyramid.sort(new Comparator<>() {
+        ArrayList<ArrayList<String>> nonDisabledColumns = getNonDisabledColumns(disabledSkillColumnIndexes);
+        nonDisabledColumns.sort(new Comparator<>() {
             @Override
             public int compare(ArrayList<String> o1, ArrayList<String> o2) {
                 return o2.size() - o1.size();
             }
         });
+        insertNonDisabledColumns(nonDisabledColumns,disabledSkillColumnIndexes);
     }
 
     private ArrayList<String> getDisabledSkillTextFieldInput(ArrayList<SkillColumn> skillGrid){
@@ -66,16 +89,6 @@ public class SkillPointDistributor {
             }
         }
         return output;
-    }
-
-    private boolean isAnySkillColumnDisabled(ArrayList<SkillColumn> skillGrid){
-        for (SkillColumn skillColumn:
-                skillGrid) {
-            if (skillColumn.isDisabled()){
-                return true;
-            }
-        }
-        return false;
     }
 
     void distributeSkillPoints(ArrayList<SkillColumn> skillGrid) throws IOException {

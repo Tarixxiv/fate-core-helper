@@ -28,7 +28,7 @@ public class CharacterGenerator extends Application {
     public CharacterGenerator() {
     }
 
-    private void generatePyramid(int skillPoints) throws IOException {
+    private void generatePyramid() throws IOException {
         skillPointDistributor.distributeSkillPoints(skillGrid);
         for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
             skillGrid.get(i).parseSkills(skillPointDistributor.skillPyramid.get(i));
@@ -42,7 +42,7 @@ public class CharacterGenerator extends Application {
                 aspectFields.get(i).setText(aspects.get(i));
             }
         }
-        generatePyramid(skillPoints);
+        generatePyramid();
     }
 
 
@@ -66,8 +66,6 @@ public class CharacterGenerator extends Application {
             vbox.getChildren().add(hbox);
         }
     }
-
-
 
     void createSkillFieldsAndCheckBoxes(VBox vbox) {
         GridPane grid = new GridPane();
@@ -97,8 +95,6 @@ public class CharacterGenerator extends Application {
         skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.skillPointsLeft);
         vbox.getChildren().add(skillPointsLeftLabel);
     }
-
-
 
     @Override
     public void start(Stage stage) throws IOException {

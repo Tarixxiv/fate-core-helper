@@ -11,17 +11,26 @@ public class SkillRandomizer {
     ArrayList<String> skills;
     int currentSkillIndex = 0;
 
-    SkillRandomizer() throws IOException {
+    SkillRandomizer(ArrayList<String> disabledSkillTextFieldInput) throws IOException{
+        readSkillFile();
+        for (String skill:
+                disabledSkillTextFieldInput) {
+            while(skills.remove(skill));
+        }
+        Collections.shuffle(skills);
+    }
+
+    private void readSkillFile() throws IOException {
         Scanner s = new Scanner(new File("src/main/data/Skills"), StandardCharsets.UTF_8);
         skills = new ArrayList<>();
         while (s.hasNextLine()){
             skills.add(s.nextLine());
         }
         s.close();
-        Collections.shuffle(skills);
     }
 
     String nextSkill(){
+
         if (skills.isEmpty() || skills.size() == currentSkillIndex){
             return "noSkillFound";
         }

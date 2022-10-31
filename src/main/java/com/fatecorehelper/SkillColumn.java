@@ -20,16 +20,17 @@ public class SkillColumn {
         this.checkBox = checkBox;
     }
 
-    public void parseSkills(ArrayList<String> arrayList){
-        for (int i = 0; i < arrayList.size(); i++) {
-            textFields.get(textFields.size() - i - 1).setText(arrayList.get(i));
-        }
-    }
-
-    public void clear(){
+    private void clear(){
         for (TextField textField:
                 textFields) {
             textField.setText("");
+        }
+    }
+
+    public void parseSkills(ArrayList<String> arrayList){
+        clear();
+        for (int i = 0; i < arrayList.size(); i++) {
+            textFields.get(textFields.size() - i - 1).setText(arrayList.get(i));
         }
     }
 

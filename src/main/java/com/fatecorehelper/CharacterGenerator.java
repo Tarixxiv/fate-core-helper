@@ -72,33 +72,30 @@ public class CharacterGenerator extends Application {
         return output;
     }
 
-    VBox createSkillFieldsAndCheckBoxes() {
-        VBox output = new VBox();
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(10, 10, 10, 10));
-        grid.setVgap(5);
-        grid.setHgap(5);
+    GridPane createSkillFieldsAndCheckBoxes() {
+        GridPane output = new GridPane();
+        output.setPadding(new Insets(10, 10, 10, 10));
+        output.setVgap(5);
+        output.setHgap(5);
         int maxPyramidHeight = skillPointDistributor.maxPyramidHeight;
         for (int i = 0; i < maxPyramidHeight; i++) {
             Label label = new Label("+" + (maxPyramidHeight - i));
-            grid.add(label,0,i + 1);
+            output.add(label,0,i + 1);
         }
         for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
             ArrayList<TextField> textFieldsColumn = new ArrayList<>();
             CheckBox checkBox = new CheckBox();
             SkillColumn skillColumn = new SkillColumn(textFieldsColumn,checkBox);
             skillGrid.add(skillColumn);
-            grid.add(checkBox,i + 1,0);
+            output.add(checkBox,i + 1,0);
             for (int j = 0; j < maxPyramidHeight; j++) {
                 HBox hbox = new HBox(8);
                 TextField textField = new TextField();
                 textFieldsColumn.add(textField);
                 hbox.getChildren().addAll(textField);
-                grid.add(hbox,i + 1,j + 1);
+                output.add(hbox,i + 1,j + 1);
             }
         }
-        output.getChildren().add(grid);
-        output.getChildren().add(skillPointsLeftLabel);
         return output;
     }
 
@@ -125,12 +122,7 @@ public class CharacterGenerator extends Application {
         return output;
     }
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        VBox vbox = new VBox(8);
-        vbox.getChildren().addAll(createAspectFieldsAndCheckboxes(),
-                createSkillFieldsAndCheckBoxes(),createPropertiesFields());
-        generateCharacter();
+    Button createGenerateButton(){
         Button button = new Button("Generate");
         button.setOnAction(event -> {
             try {
@@ -139,7 +131,16 @@ public class CharacterGenerator extends Application {
                 throw new RuntimeException(e);
             }
         });
-        vbox.getChildren().add(button);
+        return button;
+    }
+
+    @Override
+    public void start(Stage stage) throws IOException {
+        VBox vbox = new VBox(8);
+        vbox.getChildren().addAll(createAspectFieldsAndCheckboxes(),
+                createSkillFieldsAndCheckBoxes(),skillPointsLeftLabel,
+                createPropertiesFields(),createGenerateButton());
+        generateCharacter();
         vbox.setPadding(new Insets(30));
         Scene scene = new Scene(vbox, 1000,600);
         stage.setScene(scene);

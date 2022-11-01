@@ -33,7 +33,9 @@ public class CharacterGenerator extends Application {
     private void generatePyramid() throws IOException {
         skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsInput.getText()));
         for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
-            skillGrid.get(i).parseSkills(skillPointDistributor.skillPyramid.get(i));
+            if (!skillGrid.get(i).isDisabled()){
+                skillGrid.get(i).parseSkills(skillPointDistributor.skillPyramid.get(i));
+            }
         }
     }
 
@@ -45,6 +47,7 @@ public class CharacterGenerator extends Application {
             }
         }
         generatePyramid();
+        skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.skillPointsLeft);
     }
 
     void createAspectFieldsAndCheckboxes(VBox vbox){
@@ -93,7 +96,7 @@ public class CharacterGenerator extends Application {
             }
         }
         vbox.getChildren().add(grid);
-        skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.skillPointsLeft);
+        //skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.skillPointsLeft);
         vbox.getChildren().add(skillPointsLeftLabel);
     }
 

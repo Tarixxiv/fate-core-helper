@@ -91,8 +91,8 @@ public class SkillPointDistributor {
         return output;
     }
 
-    void distributeSkillPoints(ArrayList<SkillColumn> skillGrid) throws IOException {
-        skillPointsLeft = defaultSkillPoints - countSpentSkillPoints(skillGrid);
+    void distributeSkillPoints(ArrayList<SkillColumn> skillGrid, int skillPoints) throws IOException {
+        skillPointsLeft = skillPoints - countSpentSkillPoints(skillGrid);
         ArrayList<String> disabledSkillTextFieldInput = getDisabledSkillTextFieldInput(skillGrid);
         ArrayList<Integer> disabledSkillColumnIndexes = getDisabledSkillColumnIndexes(skillGrid);
         skillRandomizer = new SkillRandomizer(disabledSkillTextFieldInput);

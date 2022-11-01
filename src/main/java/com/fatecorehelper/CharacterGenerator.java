@@ -22,6 +22,8 @@ public class CharacterGenerator extends Application {
     ArrayList<CheckBox> aspectCheckboxes = new ArrayList<>();
     ArrayList<TextField> aspectFields = new ArrayList<>();
     ArrayList<SkillColumn> skillGrid = new ArrayList<>();
+
+    TextField skillPointsInput = new TextField(String.valueOf(skillPointDistributor.defaultSkillPoints));
     ArrayList<String> disabledAspectTextFieldInput = new ArrayList<>();
 
 
@@ -29,13 +31,13 @@ public class CharacterGenerator extends Application {
     }
 
     private void generatePyramid() throws IOException {
-        skillPointDistributor.distributeSkillPoints(skillGrid);
+        skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsInput.getText()));
         for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
             skillGrid.get(i).parseSkills(skillPointDistributor.skillPyramid.get(i));
         }
     }
 
-    public void generateCharacter(int skillPoints) throws IOException {
+    public void generateCharacter() throws IOException {
         ArrayList<String> aspects = aspectRandomizer.generateAspects(disabledAspectTextFieldInput);
         for (int i = 0; i < aspectCheckboxes.size(); i++) {
             if (!aspectCheckboxes.get(i).isSelected()){
@@ -44,7 +46,6 @@ public class CharacterGenerator extends Application {
         }
         generatePyramid();
     }
-
 
     void createAspectFieldsAndCheckboxes(VBox vbox){
         for (int i = 0; i < aspectRandomizer.getAspectCount(); i++) {
@@ -101,11 +102,14 @@ public class CharacterGenerator extends Application {
         VBox vbox = new VBox(8);
         createAspectFieldsAndCheckboxes(vbox);
         createSkillFieldsAndCheckBoxes(vbox);
-        generateCharacter(skillPointDistributor.defaultSkillPoints);
+        generateCharacter();
+        vbox.getChildren().add(new Label("Skill points:"));
+        skillPointsInput.setMaxWidth(40);
+        vbox.getChildren().add(skillPointsInput);
         Button button = new Button("Generate");
         button.setOnAction(event -> {
             try {
-                generateCharacter(skillPointDistributor.defaultSkillPoints);
+                generateCharacter();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

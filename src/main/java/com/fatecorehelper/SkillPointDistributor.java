@@ -1,6 +1,4 @@
 package com.fatecorehelper;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
@@ -10,7 +8,7 @@ public class SkillPointDistributor {
     SkillRandomizer skillRandomizer;
     int defaultSkillPoints = 20;
     int skillPointsLeft;
-    final int maxPyramidHeight = 5;
+    final int defaultMaxPyramidHeight = 5;
     final int pyramidWidth = 5;
     ArrayList<ArrayList<String>> skillPyramid = new ArrayList<>();
 
@@ -91,7 +89,10 @@ public class SkillPointDistributor {
         return output;
     }
 
-    void distributeSkillPoints(ArrayList<SkillColumn> skillGrid, int skillPoints) throws IOException {
+    void distributeSkillPoints(ArrayList<SkillColumn> skillGrid, int skillPoints, int maxPyramidHeight) throws Exception {
+        if (maxPyramidHeight > defaultMaxPyramidHeight + 1){
+            throw new Exception("too low defaultMaxPyramidHeight");
+        }
         skillPointsLeft = skillPoints - countSpentSkillPoints(skillGrid);
         ArrayList<String> disabledSkillTextFieldInput = getDisabledSkillTextFieldInput(skillGrid);
         ArrayList<Integer> disabledSkillColumnIndexes = getDisabledSkillColumnIndexes(skillGrid);

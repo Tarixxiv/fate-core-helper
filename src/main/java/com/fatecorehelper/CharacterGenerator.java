@@ -11,7 +11,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class CharacterGenerator extends Application {
@@ -22,15 +21,16 @@ public class CharacterGenerator extends Application {
     ArrayList<TextField> aspectFields = new ArrayList<>();
     ArrayList<SkillColumn> skillGrid = new ArrayList<>();
     TextField skillPointsInput = new TextField(String.valueOf(skillPointDistributor.defaultSkillPoints));
-    TextField maxPyramidHeightInput = new TextField(String.valueOf(skillPointDistributor.maxPyramidHeight));
+    TextField maxPyramidHeightInput = new TextField(String.valueOf(skillPointDistributor.defaultMaxPyramidHeight));
     ArrayList<String> disabledAspectTextFieldInput = new ArrayList<>();
 
 
     public CharacterGenerator() {
     }
 
-    private void generatePyramid() throws IOException {
-        skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsInput.getText()));
+    private void generatePyramid() throws Exception {
+        skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsInput.getText()),
+                Integer.parseInt(maxPyramidHeightInput.getText()));
         for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
             if (!skillGrid.get(i).isDisabled()){
                 skillGrid.get(i).parseSkills(skillPointDistributor.skillPyramid.get(i));
@@ -38,7 +38,7 @@ public class CharacterGenerator extends Application {
         }
     }
 
-    public void generateCharacter() throws IOException {
+    public void generateCharacter() throws Exception {
         ArrayList<String> aspects = aspectRandomizer.generateAspects(disabledAspectTextFieldInput);
         for (int i = 0; i < aspectCheckboxes.size(); i++) {
             if (!aspectCheckboxes.get(i).isSelected()){
@@ -77,7 +77,7 @@ public class CharacterGenerator extends Application {
         output.setPadding(new Insets(10, 10, 10, 10));
         output.setVgap(5);
         output.setHgap(5);
-        int maxPyramidHeight = skillPointDistributor.maxPyramidHeight;
+        int maxPyramidHeight = skillPointDistributor.defaultMaxPyramidHeight;
         for (int i = 0; i < maxPyramidHeight; i++) {
             Label label = new Label("+" + (maxPyramidHeight - i));
             output.add(label,0,i + 1);
@@ -127,7 +127,7 @@ public class CharacterGenerator extends Application {
         button.setOnAction(event -> {
             try {
                 generateCharacter();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
@@ -135,7 +135,7 @@ public class CharacterGenerator extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws Exception {
         VBox vbox = new VBox(8);
         vbox.getChildren().addAll(createAspectFieldsAndCheckboxes(),
                 createSkillFieldsAndCheckBoxes(),skillPointsLeftLabel,

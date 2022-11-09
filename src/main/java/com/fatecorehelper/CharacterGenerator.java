@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class CharacterGenerator extends Application {
+    SkillEditor skillEditor;
     AspectRandomizer aspectRandomizer = new AspectRandomizer();
     SkillPointDistributor skillPointDistributor = new SkillPointDistributor();
     Label skillPointsLeftLabel = new Label();
@@ -23,7 +24,6 @@ public class CharacterGenerator extends Application {
     TextField skillPointsInput = new TextField(String.valueOf(skillPointDistributor.defaultSkillPoints));
     TextField maxPyramidHeightInput = new TextField(String.valueOf(skillPointDistributor.defaultMaxPyramidHeight));
     ArrayList<String> disabledAspectTextFieldInput = new ArrayList<>();
-
 
     public CharacterGenerator() {
     }
@@ -134,15 +134,23 @@ public class CharacterGenerator extends Application {
         return button;
     }
 
+    Button createSkillEditorButton(Stage stage){
+        Button button = new Button("Edit skills");
+        button.setOnAction(event-> stage.setScene(skillEditor.getScene()));
+        return button;
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
         VBox vbox = new VBox(8);
+        Scene scene = new Scene(vbox, 1000,600);
+        skillEditor = new SkillEditor(stage,scene);
         vbox.getChildren().addAll(createAspectFieldsAndCheckboxes(),
+                createSkillEditorButton(stage),
                 createSkillFieldsAndCheckBoxes(),skillPointsLeftLabel,
                 createPropertiesFields(),createGenerateButton());
         generateCharacter();
         vbox.setPadding(new Insets(30));
-        Scene scene = new Scene(vbox, 1000,600);
         stage.setScene(scene);
         stage.show();
     }

@@ -1,6 +1,5 @@
 package com.fatecorehelper;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Random;
 
 public class SkillPointDistributor {
@@ -8,7 +7,7 @@ public class SkillPointDistributor {
     SkillRandomizer skillRandomizer;
     int defaultSkillPoints = 20;
     int skillPointsLeft;
-    final int defaultMaxPyramidHeight = 5;
+    final int defaultMaxPyramidHeight = 6;
     final int pyramidWidth = 5;
     ArrayList<ArrayList<String>> skillPyramid = new ArrayList<>();
 
@@ -48,12 +47,7 @@ public class SkillPointDistributor {
 
     private void sortSkillPyramid(ArrayList<Integer> disabledSkillColumnIndexes){
         ArrayList<ArrayList<String>> nonDisabledColumns = getNonDisabledColumns(disabledSkillColumnIndexes);
-        nonDisabledColumns.sort(new Comparator<>() {
-            @Override
-            public int compare(ArrayList<String> o1, ArrayList<String> o2) {
-                return o2.size() - o1.size();
-            }
-        });
+        nonDisabledColumns.sort((o1, o2) -> o2.size() - o1.size());
         insertNonDisabledColumns(nonDisabledColumns,disabledSkillColumnIndexes);
     }
 

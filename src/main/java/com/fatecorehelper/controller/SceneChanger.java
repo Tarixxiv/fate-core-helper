@@ -29,6 +29,5 @@ public class SceneChanger {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

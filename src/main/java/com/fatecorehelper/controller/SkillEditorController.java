@@ -35,14 +35,17 @@ public class SkillEditorController {
 
     public void onReturnButtonClick(ActionEvent actionEvent) {
         skillEditor.saveToFile(textArea.getText(),skillsPath);
-        SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/GeneratorView.fxml");
-        sceneChanger.changeScene();
+        onReturnNoSaveButtonButtonClick(actionEvent);
     }
-
 
     public void onrResetButtonClick(ActionEvent actionEvent) {
         ArrayList<String> parsedDefaultSkills = fileParser.parseResourceLinesToArray("DefaultSkills");
         skillEditor.saveToFile(String.join("\n",parsedDefaultSkills),skillsPath);
         initialiseTextArea();
+    }
+
+    public void onReturnNoSaveButtonButtonClick(ActionEvent actionEvent) {
+        SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/GeneratorView.fxml");
+        sceneChanger.changeScene();
     }
 }

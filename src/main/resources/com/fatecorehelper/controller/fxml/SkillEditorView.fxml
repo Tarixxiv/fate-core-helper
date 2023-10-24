@@ -4,15 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="vBox" alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fatecorehelper.controller.SkillEditorController">
+<VBox fx:id="vBox" alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fatecorehelper.controller.SkillEditorController">
    <padding>
-      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
    </padding>
-   <HBox>
-      <Button fx:id="returnButton" mnemonicParsing="false" onAction="#onReturnButtonClick" text="Return and Save"/>
-      <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onrResetButtonClick" text="Reset Default"/>
+   <HBox spacing="5.0">
+      <Button fx:id="returnButton" mnemonicParsing="false" onAction="#onReturnButtonClick" text="Return and Save" />
+      <Button fx:id="returnNoSaveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onReturnNoSaveButtonButtonClick" text="Return without Saving" />
+      <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onrResetButtonClick" text="Reset Default" />
    </HBox>
 
-   <TextArea fx:id="textArea" prefHeight="400.0" prefWidth="200.0"/>
+   <TextArea fx:id="textArea" prefHeight="400.0" prefWidth="200.0" />
 </VBox>

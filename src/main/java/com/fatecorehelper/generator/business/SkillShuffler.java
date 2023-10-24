@@ -1,4 +1,4 @@
-package com.fatecorehelper;
+package com.fatecorehelper.generator.business;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class SkillRandomizer {
+public class SkillShuffler {
     ArrayList<String> skills;
     int currentSkillIndex = 0;
 
-    SkillRandomizer(ArrayList<String> disabledSkillTextFieldInput) throws IOException{
+    SkillShuffler(ArrayList<String> disabledSkillTextFieldInput) throws IOException{
         readSkillFile();
         for (String skill:
                 disabledSkillTextFieldInput) {

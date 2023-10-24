@@ -13,11 +13,9 @@ repositories {
 }
 
 ext {
-    junitVersion = '5.8.2'
+    junitVersion = '5.9.2'
 }
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -25,7 +23,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.fatecorehelper'
-    mainClass = 'com.fatecorehelper.HelloApplication'
+    mainClass = 'com.fatecorehelper.FateCoreHelperApp'
 }
 
 javafx {
@@ -34,10 +32,9 @@ javafx {
 }
 
 dependencies {
-    implementation('com.dlsc.formsfx:formsfx-core:11.3.2') {
+    implementation('com.dlsc.formsfx:formsfx-core:11.6.0') {
         exclude(group: 'org.openjfx')
     }
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }

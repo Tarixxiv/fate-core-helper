@@ -1,17 +1,20 @@
-package com.fatecorehelper;
+package com.fatecorehelper.generator.business;
+import com.fatecorehelper.generator.ui.SkillColumn;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class SkillPointDistributor {
     Random random = new Random();
-    SkillRandomizer skillRandomizer;
-    int defaultSkillPoints = 20;
-    int skillPointsLeft;
-    final int defaultMaxPyramidHeight = 6;
-    final int pyramidWidth = 5;
-    ArrayList<ArrayList<String>> skillPyramid = new ArrayList<>();
+    SkillShuffler skillShuffler;
+    public int defaultSkillPoints = 20;
+    public int skillPointsLeft;
+    public final int defaultMaxPyramidHeight = 6;
+    public final int pyramidWidth = 5;
+    public ArrayList<ArrayList<String>> skillPyramid;
 
-    SkillPointDistributor(){
+    public SkillPointDistributor(){
+        skillPyramid = new ArrayList<>();
         for (int i = 0; i < pyramidWidth; i++){
             skillPyramid.add(new ArrayList<>());
         }
@@ -77,20 +80,20 @@ public class SkillPointDistributor {
         for (SkillColumn skillColumn:
                 skillGrid) {
             if (skillColumn.isDisabled()){
-                output += skillColumn.getSkillPointsInColumn();
+                output += skillColumn.countSkillPointsInColumn();
             }
         }
         return output;
     }
 
-    void distributeSkillPoints(ArrayList<SkillColumn> skillGrid, int skillPoints, int maxPyramidHeight) throws Exception {
+    public void distributeSkillPoints(ArrayList<SkillColumn> skillGrid, int skillPoints, int maxPyramidHeight) throws Exception {
         if (maxPyramidHeight > defaultMaxPyramidHeight + 1){
             throw new Exception("too low defaultMaxPyramidHeight");
         }
         skillPointsLeft = skillPoints - countSpentSkillPoints(skillGrid);
         ArrayList<String> disabledSkillTextFieldInput = getDisabledSkillTextFieldInput(skillGrid);
         ArrayList<Integer> disabledSkillColumnIndexes = getDisabledSkillColumnIndexes(skillGrid);
-        skillRandomizer = new SkillRandomizer(disabledSkillTextFieldInput);
+        skillShuffler = new SkillShuffler(disabledSkillTextFieldInput);
         clearSkillPyramid(disabledSkillColumnIndexes);
         while (skillPointsLeft > 0){
             ArrayList<Integer> possibleSlots = new ArrayList<>();
@@ -104,7 +107,7 @@ public class SkillPointDistributor {
             }
             int chosenSkillColumn = possibleSlots.get(random.nextInt(possibleSlots.size()));
             skillPointsLeft -= (skillPyramid.get(chosenSkillColumn).size() + 1);
-            skillPyramid.get(chosenSkillColumn).add(skillRandomizer.nextSkill());
+            skillPyramid.get(chosenSkillColumn).add(skillShuffler.nextSkill());
         }
         sortSkillPyramid(disabledSkillColumnIndexes);
     }

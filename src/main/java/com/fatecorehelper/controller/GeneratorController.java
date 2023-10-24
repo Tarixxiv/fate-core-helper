@@ -1,36 +1,41 @@
-package com.fatecorehelper;
+package com.fatecorehelper.controller;
 
-import javafx.application.Application;
+import com.fatecorehelper.controller.util.SceneChanger;
+import com.fatecorehelper.generator.business.AspectRandomizer;
+import com.fatecorehelper.generator.business.SkillPointDistributor;
+import com.fatecorehelper.generator.ui.SkillColumn;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class CharacterGenerator extends Application {
-    SkillEditor skillEditor;
+public class GeneratorController {
+    @FXML
+    VBox vBox;
+    @FXML
+    TextField skillPointsTextField;
+    @FXML
+    TextField skillCapTextField;
     AspectRandomizer aspectRandomizer = new AspectRandomizer();
     SkillPointDistributor skillPointDistributor = new SkillPointDistributor();
     Label skillPointsLeftLabel = new Label();
     ArrayList<CheckBox> aspectCheckboxes = new ArrayList<>();
     ArrayList<TextField> aspectFields = new ArrayList<>();
     ArrayList<SkillColumn> skillGrid = new ArrayList<>();
-    TextField skillPointsInput = new TextField(String.valueOf(skillPointDistributor.defaultSkillPoints));
-    TextField maxPyramidHeightInput = new TextField(String.valueOf(skillPointDistributor.defaultMaxPyramidHeight));
     ArrayList<String> disabledAspectTextFieldInput = new ArrayList<>();
 
-    public CharacterGenerator() {
-    }
-
     private void generatePyramid() throws Exception {
-        skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsInput.getText()),
-                Integer.parseInt(maxPyramidHeightInput.getText()));
+        skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsTextField.getText()),
+                Integer.parseInt(skillCapTextField.getText()));
         for (int i = 0; i < skillPointDistributor.pyramidWidth; i++) {
             if (!skillGrid.get(i).isDisabled()){
                 skillGrid.get(i).parseSkills(skillPointDistributor.skillPyramid.get(i));
@@ -38,15 +43,23 @@ public class CharacterGenerator extends Application {
         }
     }
 
-    public void generateCharacter() throws Exception {
+    private void fillCharacterAspects() throws FileNotFoundException {
         ArrayList<String> aspects = aspectRandomizer.generateAspects(disabledAspectTextFieldInput);
         for (int i = 0; i < aspectCheckboxes.size(); i++) {
             if (!aspectCheckboxes.get(i).isSelected()){
                 aspectFields.get(i).setText(aspects.get(i));
             }
         }
+    }
+
+    private void fillCharacterSkills() throws Exception {
         generatePyramid();
         skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.skillPointsLeft);
+    }
+    
+    private void fillGeneratedCharacterData() throws Exception {
+        fillCharacterAspects();
+        fillCharacterSkills();
     }
 
     VBox createAspectFieldsAndCheckboxes(){
@@ -99,63 +112,28 @@ public class CharacterGenerator extends Application {
         return output;
     }
 
-    VBox createSkillPointsVbox(){
-        VBox output = new VBox();
-        output.getChildren().add(new Label("Skill points:"));
-        skillPointsInput.setMaxWidth(40);
-        output.getChildren().add(skillPointsInput);
-        output.setPadding(new Insets(0,40,0,0));
-        return output;
+    @FXML
+    private void initialize() throws Exception {
+        skillPointsTextField.setText(String.valueOf(skillPointDistributor.defaultSkillPoints));
+        skillCapTextField.setText(String.valueOf(skillPointDistributor.defaultMaxPyramidHeight));
+
+        vBox.getChildren().addAll(createAspectFieldsAndCheckboxes(),
+                createSkillFieldsAndCheckBoxes(),skillPointsLeftLabel);
+
+        fillGeneratedCharacterData();
     }
 
-    VBox createMaxPyramidHeightVbox(){
-        VBox output = new VBox();
-        output.getChildren().add(new Label("Max pyramid height:"));
-        maxPyramidHeightInput.setMaxWidth(40);
-        output.getChildren().add(maxPyramidHeightInput);
-        return output;
+    @FXML
+    public void onGenerateButtonClick(ActionEvent actionEvent) {
+        try {
+            fillGeneratedCharacterData();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    HBox createPropertiesFields(){
-        HBox output = new HBox();
-        output.getChildren().addAll(createSkillPointsVbox(),createMaxPyramidHeightVbox());
-        return output;
-    }
-
-    Button createGenerateButton(){
-        Button button = new Button("Generate");
-        button.setOnAction(event -> {
-            try {
-                generateCharacter();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        return button;
-    }
-
-    Button createSkillEditorButton(Stage stage){
-        Button button = new Button("Edit skills");
-        button.setOnAction(event-> stage.setScene(skillEditor.getScene()));
-        return button;
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        VBox vbox = new VBox(8);
-        Scene scene = new Scene(vbox, 1000,600);
-        skillEditor = new SkillEditor(stage,scene);
-        vbox.getChildren().addAll(createAspectFieldsAndCheckboxes(),
-                createSkillEditorButton(stage),
-                createSkillFieldsAndCheckBoxes(),skillPointsLeftLabel,
-                createPropertiesFields(),createGenerateButton());
-        generateCharacter();
-        vbox.setPadding(new Insets(30));
-        stage.setScene(scene);
-        stage.show();
-    }
-    
-    public static void main(String[] args) {
-        launch();
+    public void onEditSkillsButtonClick(ActionEvent actionEvent) throws IOException {
+        SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/SkillEditorView.fxml");
+        sceneChanger.changeScene();
     }
 }

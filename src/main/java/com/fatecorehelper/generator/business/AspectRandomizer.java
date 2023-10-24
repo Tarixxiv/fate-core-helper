@@ -1,4 +1,4 @@
-package com.fatecorehelper;
+package com.fatecorehelper.generator.business;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 
 public class AspectRandomizer {
-
     final static int genericAspectCount = 2;
     final static int aspectCount = genericAspectCount + 3;
 

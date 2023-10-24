@@ -1,4 +1,4 @@
-package com.fatecorehelper;
+package com.fatecorehelper.generator.ui;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -9,7 +9,7 @@ public class SkillColumn {
     private final ArrayList<TextField> textFields;
     private final CheckBox checkBox;
 
-    SkillColumn(ArrayList<TextField> textFields, CheckBox checkBox){
+    public SkillColumn(ArrayList<TextField> textFields, CheckBox checkBox){
         this.textFields = textFields;
         checkBox.setOnAction(event -> {
             for (TextField textField:
@@ -38,7 +38,7 @@ public class SkillColumn {
         return checkBox.isSelected();
     }
 
-    public int getSkillPointsInColumn(){
+    public int countSkillPointsInColumn(){
         int output = 0;
         for (int i = 0; i < textFields.size(); i++) {
             if (!textFields.get(i).getText().isBlank()){

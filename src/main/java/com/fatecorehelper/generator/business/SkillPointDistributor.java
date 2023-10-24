@@ -1,5 +1,5 @@
 package com.fatecorehelper.generator.business;
-import com.fatecorehelper.generator.ui.SkillColumn;
+import com.fatecorehelper.controller.util.SkillColumn;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -7,13 +7,18 @@ import java.util.Random;
 public class SkillPointDistributor {
     Random random = new Random();
     SkillShuffler skillShuffler;
-    public int defaultSkillPoints = 20;
-    public int skillPointsLeft;
-    public final int defaultMaxPyramidHeight = 6;
-    public final int pyramidWidth = 5;
+    int skillPointsLeft;
+    private final int defaultMaxPyramidHeight;
+    private final int pyramidWidth;
     public ArrayList<ArrayList<String>> skillPyramid;
+    public int getSkillPointsLeft() {
+        return skillPointsLeft;
+    }
 
-    public SkillPointDistributor(){
+    public SkillPointDistributor(int defaultMaxPyramidHeight, int pyramidWidth){
+        this.defaultMaxPyramidHeight = defaultMaxPyramidHeight;
+        this.pyramidWidth = pyramidWidth;
+
         skillPyramid = new ArrayList<>();
         for (int i = 0; i < pyramidWidth; i++){
             skillPyramid.add(new ArrayList<>());

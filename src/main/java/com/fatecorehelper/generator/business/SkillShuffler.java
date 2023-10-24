@@ -1,17 +1,17 @@
 package com.fatecorehelper.generator.business;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class SkillShuffler {
     ArrayList<String> skills;
     int currentSkillIndex = 0;
+    String skillsPath = "DefaultSkills";
 
-    SkillShuffler(ArrayList<String> disabledSkillTextFieldInput) throws IOException{
+    SkillShuffler(ArrayList<String> disabledSkillTextFieldInput) {
         readSkillFile();
         for (String skill:
                 disabledSkillTextFieldInput) {
@@ -20,8 +20,8 @@ public class SkillShuffler {
         Collections.shuffle(skills);
     }
 
-    private void readSkillFile() throws IOException {
-        Scanner s = new Scanner(new File("src/main/data/Skills"), StandardCharsets.UTF_8);
+    private void readSkillFile() {
+        Scanner s = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream(skillsPath)), StandardCharsets.UTF_8);
         skills = new ArrayList<>();
         while (s.hasNextLine()){
             skills.add(s.nextLine());

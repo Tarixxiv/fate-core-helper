@@ -11,10 +11,10 @@ public class FateCoreHelperApp extends Application {
     int stageWidth = 1000;
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(FateCoreHelperApp.class.getResource("controller/fxml/GeneratorView.fxml"));
-        VBox page  = fxmlLoader.load();
         stage.setHeight(stageHeight);
         stage.setWidth(stageWidth);
+        FXMLLoader fxmlLoader = new FXMLLoader(FateCoreHelperApp.class.getResource("controller/fxml/GeneratorView.fxml"));
+        VBox page  = fxmlLoader.load();
         Scene scene = new Scene(page);
         stage.setTitle("FateCoreHelperApp");
         stage.setScene(scene);

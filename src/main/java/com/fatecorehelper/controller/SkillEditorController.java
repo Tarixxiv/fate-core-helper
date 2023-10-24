@@ -1,51 +1,48 @@
 package com.fatecorehelper.controller;
 
-import com.fatecorehelper.controller.util.SceneChanger;
+import com.fatecorehelper.generator.business.FileParser;
+import com.fatecorehelper.generator.business.SkillEditor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+import java.util.ArrayList;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 public class SkillEditorController {
+    @FXML
+    Button resetButton;
     @FXML
     VBox vBox;
     @FXML
     Button returnButton;
     @FXML
     TextArea textArea;
-
-
-    private void initializeTextArea() throws IOException {
-        Scanner s = new Scanner(new File("src/main/data/Skills"), StandardCharsets.UTF_8);
-        textArea.setText(s.useDelimiter("\\Z").next());
-        s.close();
-    }
-
-    private void saveToFile(){
-        try {
-            OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("src/main/data/Skills"),StandardCharsets.UTF_8);
-            BufferedWriter writer = new BufferedWriter(osw);
-            writer.write(textArea.getText());
-            writer.close();
-            osw.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    SkillEditor skillEditor = new SkillEditor();
+    FileParser fileParser = new FileParser();
+    String skillsPath = "src/main/data/Skills";
 
     @FXML
-    private void initialize() throws Exception {
-        initializeTextArea();
+    private void initialize() {
+        initialiseTextArea();
     }
 
-    public void onReturnButtonClick(ActionEvent actionEvent) throws IOException {
-        saveToFile();
+    private void initialiseTextArea(){
+        ArrayList<String> parsedFile = fileParser.parseFileLinesToArray(skillsPath);
+        textArea.setText(String.join("\n",parsedFile));
+    }
+
+    public void onReturnButtonClick(ActionEvent actionEvent) {
+        skillEditor.saveToFile(textArea.getText(),skillsPath);
         SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/GeneratorView.fxml");
         sceneChanger.changeScene();
+    }
+
+
+    public void onrResetButtonClick(ActionEvent actionEvent) {
+        ArrayList<String> parsedDefaultSkills = fileParser.parseResourceLinesToArray("DefaultSkills");
+        skillEditor.saveToFile(String.join("\n",parsedDefaultSkills),skillsPath);
+        initialiseTextArea();
     }
 }

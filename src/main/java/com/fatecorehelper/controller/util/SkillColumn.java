@@ -1,4 +1,4 @@
-package com.fatecorehelper.generator.ui;
+package com.fatecorehelper.controller.util;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -27,7 +27,7 @@ public class SkillColumn {
         }
     }
 
-    public void parseSkills(ArrayList<String> arrayList){
+    public void fillSkills(ArrayList<String> arrayList){
         clear();
         for (int i = 0; i < arrayList.size(); i++) {
             textFields.get(textFields.size() - i - 1).setText(arrayList.get(i));

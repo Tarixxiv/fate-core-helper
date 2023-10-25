@@ -27,6 +27,11 @@
               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
           </HBox.margin>
         </Button>
+        <Button onAction="#onClipboardButtonClick" text="Output to clipboard">
+            <HBox.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </HBox.margin>
+        </Button>
         <VBox prefHeight="200.0" prefWidth="100.0">
             <HBox.margin>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

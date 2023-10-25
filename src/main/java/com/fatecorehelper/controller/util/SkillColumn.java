@@ -48,7 +48,7 @@ public class SkillColumn {
         return output;
     }
 
-    public ArrayList<String> getSkills() {
+    public ArrayList<String> getNonBlankTextFieldsText() {
         ArrayList<String> output = new ArrayList<>();
         for (TextField textField:
                 textFields){

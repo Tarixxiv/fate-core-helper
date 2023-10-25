@@ -9,14 +9,19 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GeneratorController {
     public int defaultSkillPoints = 20;
     public final int defaultMaxPyramidHeight = 6;
     public final int pyramidWidth = 5;
+
     @FXML
     VBox characterVBox;
     @FXML
@@ -61,6 +66,47 @@ public class GeneratorController {
         fillCharacterSkills();
     }
 
+    private String parseSkillsToOutput(){
+        StringBuilder stringBuilder = new StringBuilder();
+        List<ArrayList<String>> skills = skillGrid.stream().map(SkillColumn::getNonBlankTextFieldsText).toList();
+        skills.forEach(Collections::reverse);
+        for (int i = 0; i < skills.get(0).size(); i++) {
+            int pyramidSize = skills.get(0).size();
+            int reverseIndex = pyramidSize - i - 1;
+            for (ArrayList<String> skillColumn:
+                    skills) {
+                if (skillColumn.size() > reverseIndex){
+                    stringBuilder.append(skillColumn.get(reverseIndex));
+                    stringBuilder.append("  |  ");
+                }
+            }
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    private String parseAspectsToOutput(){
+        List<String> aspects =  aspectFields.stream().map(TextField::getText).toList();
+        StringBuilder stringBuilder = new StringBuilder();
+        int i = 0;
+        String aspectAnnotation;
+        for (String aspect:
+             aspects) {
+
+            aspectAnnotation = switch (i) {
+                case 0 -> "HC: ";
+                case 1 -> "Tr: ";
+                default -> "* ";
+            };
+
+            stringBuilder.append(aspectAnnotation);
+            stringBuilder.append(aspect);
+            stringBuilder.append("\n");
+            i++;
+        }
+        return stringBuilder.toString();
+    }
+
     @FXML
     private void initialize() throws Exception {
         skillPointsTextField.setText(String.valueOf(defaultSkillPoints));
@@ -87,4 +133,16 @@ public class GeneratorController {
         SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/SkillEditorView.fxml");
         sceneChanger.changeScene();
     }
+
+    public void onClipboardButtonClick(ActionEvent actionEvent) {
+        parseAspectsToOutput();
+        parseSkillsToOutput();
+        String output = parseAspectsToOutput() + "\n" + parseSkillsToOutput();
+        System.out.println(output);
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(output);
+        clipboard.setContent(content);
+    }
 }
+

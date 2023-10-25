@@ -64,7 +64,7 @@ public class SkillPointDistributor {
         for (SkillColumn skillColumn:
                 skillGrid) {
             if (skillColumn.isDisabled()){
-                output.addAll(skillColumn.getSkills());
+                output.addAll(skillColumn.getNonBlankTextFieldsText());
             }
         }
         return output;

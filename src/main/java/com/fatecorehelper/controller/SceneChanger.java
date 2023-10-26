@@ -10,17 +10,18 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class SceneChanger {
-    ActionEvent actionEvent;
-    String newSceneURL;
+    final ActionEvent actionEvent;
+    final String newSceneURL;
+    final FXMLLoader loader;
 
     public SceneChanger(ActionEvent actionEvent, String newSceneURL) {
         this.actionEvent = actionEvent;
         this.newSceneURL = newSceneURL;
+        loader = new FXMLLoader(getClass().getResource(newSceneURL));
     }
 
     public void changeScene() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(newSceneURL));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
@@ -29,5 +30,9 @@ public class SceneChanger {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Object getController(){
+        return loader.getController();
     }
 }

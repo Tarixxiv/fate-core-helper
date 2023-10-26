@@ -134,15 +134,25 @@ public class GeneratorController {
         sceneChanger.changeScene();
     }
 
-    public void onClipboardButtonClick(ActionEvent actionEvent) {
+    private String characterToString(){
         parseAspectsToOutput();
         parseSkillsToOutput();
-        String output = parseAspectsToOutput() + "\n" + parseSkillsToOutput();
+        return parseAspectsToOutput() + "\n" + parseSkillsToOutput();
+    }
+
+    public void onClipboardButtonClick(ActionEvent actionEvent) {
+        String output = characterToString();
         System.out.println(output);
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
         content.putString(output);
         clipboard.setContent(content);
+    }
+
+    public void loadButtonClick(ActionEvent actionEvent) {
+        SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/CharacterLoaderView.fxml");
+        CharacterLoaderController controller = (CharacterLoaderController) sceneChanger.getController();
+        sceneChanger.changeScene();
     }
 }
 

@@ -38,7 +38,7 @@ public class SkillEditorController {
         onReturnNoSaveButtonButtonClick(actionEvent);
     }
 
-    public void onrResetButtonClick(ActionEvent actionEvent) {
+    public void onrResetButtonClick() {
         ArrayList<String> parsedDefaultSkills = fileParser.parseResourceLinesToArray("DefaultSkills");
         skillEditor.saveToFile(String.join("\n",parsedDefaultSkills),skillsPath);
         initialiseTextArea();

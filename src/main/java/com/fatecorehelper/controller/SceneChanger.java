@@ -12,12 +12,13 @@ import java.io.IOException;
 public class SceneChanger {
     final ActionEvent actionEvent;
     final String newSceneURL;
-    final FXMLLoader loader;
+    FXMLLoader loader;
 
     public SceneChanger(ActionEvent actionEvent, String newSceneURL) {
         this.actionEvent = actionEvent;
         this.newSceneURL = newSceneURL;
         loader = new FXMLLoader(getClass().getResource(newSceneURL));
+
     }
 
     public void changeScene() {

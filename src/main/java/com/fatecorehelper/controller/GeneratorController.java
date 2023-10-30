@@ -4,6 +4,7 @@ import com.fatecorehelper.controller.util.GeneratorVBoxCreator;
 import com.fatecorehelper.controller.util.SkillColumn;
 import com.fatecorehelper.generator.business.AspectRandomizer;
 import com.fatecorehelper.generator.business.SkillPointDistributor;
+import com.fatecorehelper.model.Character;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -73,11 +74,14 @@ public class GeneratorController {
         for (int i = 0; i < skills.get(0).size(); i++) {
             int pyramidSize = skills.get(0).size();
             int reverseIndex = pyramidSize - i - 1;
+            stringBuilder.append("+");
+            stringBuilder.append(reverseIndex + 1);
+
             for (ArrayList<String> skillColumn:
                     skills) {
                 if (skillColumn.size() > reverseIndex){
-                    stringBuilder.append(skillColumn.get(reverseIndex));
                     stringBuilder.append("  |  ");
+                    stringBuilder.append(skillColumn.get(reverseIndex));
                 }
             }
             stringBuilder.append("\n");
@@ -120,8 +124,18 @@ public class GeneratorController {
         fillGeneratedCharacterData();
     }
 
+    public void setCharacter(Character character){
+        for (int i = 0; i < aspectFields.size(); i++) {
+            aspectFields.get(i).setText(character.aspects.get(i));
+        }
+        for (int i = 0; i < skillGrid.size(); i++) {
+            skillGrid.get(i).fillSkills(character.skillGrid.get(i));
+        }
+
+    }
+
     @FXML
-    public void onGenerateButtonClick(ActionEvent actionEvent) {
+    public void onGenerateButtonClick() {
         try {
             fillGeneratedCharacterData();
         } catch (Exception e) {
@@ -140,7 +154,7 @@ public class GeneratorController {
         return parseAspectsToOutput() + "\n" + parseSkillsToOutput();
     }
 
-    public void onClipboardButtonClick(ActionEvent actionEvent) {
+    public void onClipboardButtonClick() {
         String output = characterToString();
         System.out.println(output);
         Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -151,8 +165,9 @@ public class GeneratorController {
 
     public void loadButtonClick(ActionEvent actionEvent) {
         SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/CharacterLoaderView.fxml");
-        CharacterLoaderController controller = (CharacterLoaderController) sceneChanger.getController();
         sceneChanger.changeScene();
+        CharacterLoaderController controller = (CharacterLoaderController) sceneChanger.getController();
+        controller.setTextAreaText(characterToString());
     }
 }
 

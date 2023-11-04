@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class CharacterSaver {
-    CharacterDTO characterDTO;
-    public CharacterSaver(){
-        characterDTO = new CharacterDTO();
-    }
+    private CharacterDTO characterDTO;
     private String parseSkills(){
         StringBuilder stringBuilder = new StringBuilder();
         ArrayList<ArrayList<String>> skills = characterDTO.skillGrid;
@@ -49,18 +46,16 @@ public class CharacterSaver {
         return stringBuilder.toString();
     }
 
-    public String parseCharacter(){
+    public String parseCharacter(CharacterDTO characterDTO){
+        this.characterDTO = characterDTO;
         parseAspects();
         parseSkills();
         return parseAspects() + "\n" + parseSkills();
     }
 
-    public void setCharacter(CharacterDTO characterDTO) {
+    public void saveToFile(CharacterDTO characterDTO, String path){
         this.characterDTO = characterDTO;
-    }
-
-    public void saveToFile(String path){
         FileWriter fileWriter = new FileWriter();
-        fileWriter.saveToFile(parseCharacter(), path);
+        fileWriter.saveToFile(parseCharacter(characterDTO), path);
     }
 }

@@ -108,15 +108,13 @@ public class GeneratorController {
     }
 
     public void onEditSkillsButtonClick(ActionEvent actionEvent) {
-        characterSaver.setCharacter(createCharacter());
-        characterSaver.saveToFile(characterBufferPath);
+        characterSaver.saveToFile(createCharacter(),characterBufferPath);
         SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/SkillEditorView.fxml");
         sceneChanger.changeScene();
     }
 
     public void onClipboardButtonClick() {
-        characterSaver.setCharacter(createCharacter());
-        String output = characterSaver.parseCharacter();
+        String output = characterSaver.parseCharacter(createCharacter());
         System.out.println(output);
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
@@ -133,8 +131,7 @@ public class GeneratorController {
 
     public void loadButtonClick(ActionEvent actionEvent) {
         CharacterDTO characterDTO = createCharacter();
-        characterSaver.setCharacter(characterDTO);
-        characterSaver.saveToFile(characterBufferPath);
+        characterSaver.saveToFile(characterDTO,characterBufferPath);
         SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/CharacterLoaderView.fxml");
         sceneChanger.changeScene();
     }

@@ -19,13 +19,11 @@ public class CharacterLoaderController {
 
     @FXML
     private void initialize() {
-        characterSaver.setCharacter(characterLoader.loadFromFile(characterBufferPath));
-        textArea.setText(characterSaver.parseCharacter());
+        textArea.setText(characterSaver.parseCharacter(characterLoader.loadFromFile(characterBufferPath)));
     }
 
     public void onLoadButtonClick(ActionEvent actionEvent) {
-        characterSaver.setCharacter(characterLoader.loadFromString(textArea.getText()));
-        characterSaver.saveToFile(characterBufferPath);
+        characterSaver.saveToFile(characterLoader.loadFromString(textArea.getText()),characterBufferPath);
         onReturnButtonClick(actionEvent);
     }
 

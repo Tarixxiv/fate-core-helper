@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 
 public class GeneratorVBoxCreator {
-    final int prefTextBoxWidth = 400;
+    final static int prefTextBoxWidth = 400;
     final int defaultMaxPyramidHeight;
     final int pyramidWidth;
     final int aspectCount;

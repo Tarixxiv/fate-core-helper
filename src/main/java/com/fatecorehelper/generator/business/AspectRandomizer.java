@@ -11,7 +11,7 @@ public class AspectRandomizer {
     final static String troublePath = "Troubles";
     final static String genericAspectPath = "GenericAspects";
     final static String relationsPath = "GenericAspects";
-    Random random = new Random();
+    private static final Random random = new Random();
     FileReader fileParser = new FileReader();
 
     public ArrayList<String> getUniqueRandomFileLines(String resourcePath, int outputLineCount, ArrayList<String> excludedEntries) {

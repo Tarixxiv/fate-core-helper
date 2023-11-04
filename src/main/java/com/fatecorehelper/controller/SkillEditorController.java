@@ -24,7 +24,7 @@ public class SkillEditorController {
     TextArea textArea;
     FileWriter fileWriter = new FileWriter();
     FileReader fileReader = new FileReader();
-    String skillsPath = "src/main/data/Skills";
+    final static String skillsPath = "src/main/data/Skills";
 
     @FXML
     private void initialize() {

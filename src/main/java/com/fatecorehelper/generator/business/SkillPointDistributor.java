@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SkillPointDistributor {
-    Random random = new Random();
+    private static final Random random = new Random();
     SkillShuffler skillShuffler;
     int skillPointsLeft;
     private final int defaultMaxPyramidHeight;

@@ -4,6 +4,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class SkillColumn {
     private final ArrayList<TextField> textFields;
@@ -56,6 +58,7 @@ public class SkillColumn {
                 output.add(textField.getText());
             }
         }
+        Collections.reverse(output);
         return output;
     }
 }

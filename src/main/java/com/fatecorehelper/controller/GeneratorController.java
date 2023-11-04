@@ -1,7 +1,7 @@
 package com.fatecorehelper.controller;
 
-import com.fatecorehelper.controller.util.CharacterLoader;
-import com.fatecorehelper.controller.util.CharacterSaver;
+import com.fatecorehelper.generator.business.CharacterLoader;
+import com.fatecorehelper.generator.business.CharacterSaver;
 import com.fatecorehelper.controller.util.GeneratorVBoxCreator;
 import com.fatecorehelper.controller.util.SkillColumn;
 import com.fatecorehelper.generator.business.AspectRandomizer;

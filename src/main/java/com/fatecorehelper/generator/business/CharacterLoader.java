@@ -1,6 +1,4 @@
-package com.fatecorehelper.controller.util;
-
-import com.fatecorehelper.generator.business.FileReader;
+package com.fatecorehelper.generator.business;
 import com.fatecorehelper.model.CharacterDTO;
 
 import java.io.FileNotFoundException;

@@ -13,5 +13,6 @@ module com.fatecorehelper.fatecorehelper {
     exports com.fatecorehelper.controller;
     exports com.fatecorehelper.controller.util;
     opens com.fatecorehelper.controller.util to javafx.fxml;
+    opens com.fatecorehelper.generator.business to javafx.fxml;
 
 }

@@ -1,7 +1,7 @@
 package com.fatecorehelper.controller;
 
-import com.fatecorehelper.controller.util.CharacterLoader;
-import com.fatecorehelper.controller.util.CharacterSaver;
+import com.fatecorehelper.generator.business.CharacterLoader;
+import com.fatecorehelper.generator.business.CharacterSaver;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

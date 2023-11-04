@@ -42,13 +42,13 @@ public class GeneratorController {
 
 
     private void fillGeneratedCharacterSkills() throws Exception {
-        skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsTextField.getText()),
-                Integer.parseInt(skillCapTextField.getText()));
-        for (int i = 0; i < skillGridWidth; i++) {
-            if (!skillGrid.get(i).isDisabled()){
-                skillGrid.get(i).fillSkills(skillPointDistributor.skillPyramid.get(i));
+            skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsTextField.getText()),
+                    Integer.parseInt(skillCapTextField.getText()));
+            for (int i = 0; i < skillGridWidth; i++) {
+                if (!skillGrid.get(i).isDisabled()){
+                    skillGrid.get(i).fillSkills(skillPointDistributor.skillPyramid.get(i));
+                }
             }
-        }
     }
 
     private void fillCharacterAspects() {
@@ -60,12 +60,17 @@ public class GeneratorController {
         }
     }
 
-    private void fillCharacterSkills() throws Exception {
-        fillGeneratedCharacterSkills();
-        skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.getSkillPointsLeft());
+    private void fillCharacterSkills(){
+        try{
+            fillGeneratedCharacterSkills();
+            skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.getSkillPointsLeft());
+        } catch (Exception e) {
+            skillPointsLeftLabel.setText(e.getMessage());
+        }
+
     }
 
-    private void fillGeneratedCharacterData() throws Exception {
+    private void fillGeneratedCharacterData(){
         fillCharacterAspects();
         fillCharacterSkills();
     }

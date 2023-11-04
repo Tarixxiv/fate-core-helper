@@ -36,20 +36,19 @@ public class CharacterLoader {
     }
 
     public CharacterDTO loadFromString(String text){
+        characterDTO = new CharacterDTO();
         lines = Arrays.stream(text.split("\n")).filter(e -> !e.isBlank()).toList();
         load();
         return characterDTO;
     }
 
-
-
     public CharacterDTO loadFromFile(String path){
+        characterDTO = new CharacterDTO();
         FileReader fileReader = new FileReader();
         try{
             lines = fileReader.parseFileLinesToArray(path);
             load();
-        } catch (FileNotFoundException e) {
-            characterDTO = new CharacterDTO();
+        } catch (FileNotFoundException ignored) {
         }
         return characterDTO;
     }

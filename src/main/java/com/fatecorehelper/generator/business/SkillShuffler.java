@@ -30,7 +30,6 @@ public class SkillShuffler {
     }
 
     String nextSkill(){
-
         if (skills.isEmpty() || skills.size() == currentSkillIndex){
             return "noSkillFound";
         }

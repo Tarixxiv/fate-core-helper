@@ -32,7 +32,6 @@ public class GeneratorController {
     @FXML
     Label skillPointsLeftLabel;
     AspectRandomizer aspectRandomizer = new AspectRandomizer();
-    SkillPointDistributor skillPointDistributor = new SkillPointDistributor(defaultMaxSkillGridHeight, skillGridWidth);
     CharacterSaver characterSaver = new CharacterSaver();
     CharacterLoader characterLoader = new CharacterLoader();
     ArrayList<CheckBox> aspectCheckboxes;
@@ -41,14 +40,27 @@ public class GeneratorController {
     ArrayList<String> disabledAspectTextFieldInput;
 
 
-    private void fillGeneratedCharacterSkills() throws Exception {
-            skillPointDistributor.distributeSkillPoints(skillGrid, Integer.parseInt(skillPointsTextField.getText()),
-                    Integer.parseInt(skillCapTextField.getText()));
+    private void fillCharacterSkills() {
+        try{
+            int maxPyramidHeight = Integer.parseInt(skillCapTextField.getText());
+            int skillPoints = Integer.parseInt(skillPointsTextField.getText());
+            if (maxPyramidHeight > defaultMaxSkillGridHeight + 1){
+                throw new Exception("too low defaultMaxPyramidHeight");
+            }
+            SkillPointDistributor skillPointDistributor = new SkillPointDistributor(skillGrid, maxPyramidHeight, skillPoints);
+            ArrayList<ArrayList<String>> skillPyramid = skillPointDistributor.distributeSkillPoints();
             for (int i = 0; i < skillGridWidth; i++) {
                 if (!skillGrid.get(i).isDisabled()){
-                    skillGrid.get(i).fillSkills(skillPointDistributor.skillPyramid.get(i));
+                    skillGrid.get(i).fillSkills(skillPyramid.get(i));
                 }
             }
+            skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.getSkillPointsLeft());
+        } catch (Exception e) {
+            skillPointsLeftLabel.setText(e.getMessage());
+        }
+
+
+
     }
 
     private void fillCharacterAspects() {
@@ -59,18 +71,9 @@ public class GeneratorController {
             }
         }
     }
+    
 
-    private void fillCharacterSkills(){
-        try{
-            fillGeneratedCharacterSkills();
-            skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.getSkillPointsLeft());
-        } catch (Exception e) {
-            skillPointsLeftLabel.setText(e.getMessage());
-        }
-
-    }
-
-    private void fillGeneratedCharacterData(){
+    private void fillGeneratedCharacterTextFields(){
         fillCharacterAspects();
         fillCharacterSkills();
     }
@@ -101,7 +104,7 @@ public class GeneratorController {
     @FXML
     public void onGenerateButtonClick() {
         try {
-            fillGeneratedCharacterData();
+            fillGeneratedCharacterTextFields();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

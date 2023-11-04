@@ -76,8 +76,6 @@ public class GeneratorVBoxCreator {
         return output;
     }
 
-
-
     public ArrayList<CheckBox> getAspectCheckboxes() {
         return aspectCheckboxes;
     }

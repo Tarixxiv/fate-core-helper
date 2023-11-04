@@ -8,32 +8,34 @@ public class SkillPointDistributor {
     private static final Random random = new Random();
     SkillShuffler skillShuffler;
     int skillPointsLeft;
-    private final int defaultMaxPyramidHeight;
+    private final int maxPyramidHeight;
     private final int pyramidWidth;
     public ArrayList<ArrayList<String>> skillPyramid;
+    ArrayList<Integer> disabledSkillColumnIndexes;
+    ArrayList<SkillColumn> skillGrid;
     public int getSkillPointsLeft() {
         return skillPointsLeft;
     }
 
-    public SkillPointDistributor(int defaultMaxPyramidHeight, int pyramidWidth){
-        this.defaultMaxPyramidHeight = defaultMaxPyramidHeight;
-        this.pyramidWidth = pyramidWidth;
+    public SkillPointDistributor(ArrayList<SkillColumn> skillGrid, int maxPyramidHeight, int skillPoints){
+        this.skillGrid = skillGrid;
+        this.pyramidWidth = skillGrid.size();
+        this.maxPyramidHeight = maxPyramidHeight;
+        resetSkillPyramid();
+        disabledSkillColumnIndexes = getDisabledSkillColumnIndexes();
+        skillShuffler = new SkillShuffler(getDisabledSkillTextFieldInput());
+        skillPointsLeft = skillPoints - countSpentSkillPoints();
+        resetSkillPyramid();
+    }
 
+    private void resetSkillPyramid(){
         skillPyramid = new ArrayList<>();
         for (int i = 0; i < pyramidWidth; i++){
             skillPyramid.add(new ArrayList<>());
         }
     }
 
-    private void clearSkillPyramid(ArrayList<Integer> excludedColumnIndexes){
-        for (int i = 0; i < pyramidWidth; i++) {
-            if (!excludedColumnIndexes.contains(i)){
-                skillPyramid.set(i,new ArrayList<>());
-            }
-        }
-    }
-
-    private ArrayList<ArrayList<String>> getNonDisabledColumns(ArrayList<Integer> disabledSkillColumnIndexes){
+    private ArrayList<ArrayList<String>> getEnabledColumns(){
         ArrayList<ArrayList<String>> output = new ArrayList<>();
         for (int i = 0; i < skillPyramid.size(); i++) {
             if (!disabledSkillColumnIndexes.contains(i)){
@@ -43,23 +45,23 @@ public class SkillPointDistributor {
         return output;
     }
 
-    private void insertNonDisabledColumns(ArrayList<ArrayList<String>> nonDisabledColumns, ArrayList<Integer> disabledSkillColumnIndexes){
+    private void insertEnabledColumns(ArrayList<ArrayList<String>> insertEnabledColumns){
         int j = 0;
         for (int i = 0; i < skillPyramid.size(); i++) {
             if (!disabledSkillColumnIndexes.contains(i)){
-                skillPyramid.set(i,nonDisabledColumns.get(j));
+                skillPyramid.set(i,insertEnabledColumns.get(j));
                 j++;
             }
         }
     }
 
-    private void sortSkillPyramid(ArrayList<Integer> disabledSkillColumnIndexes){
-        ArrayList<ArrayList<String>> nonDisabledColumns = getNonDisabledColumns(disabledSkillColumnIndexes);
-        nonDisabledColumns.sort((o1, o2) -> o2.size() - o1.size());
-        insertNonDisabledColumns(nonDisabledColumns,disabledSkillColumnIndexes);
+    private void sortSkillPyramid(){
+        ArrayList<ArrayList<String>> enabledColumns = getEnabledColumns();
+        enabledColumns.sort((o1, o2) -> o2.size() - o1.size());
+        insertEnabledColumns(enabledColumns);
     }
 
-    private ArrayList<String> getDisabledSkillTextFieldInput(ArrayList<SkillColumn> skillGrid){
+    private ArrayList<String> getDisabledSkillTextFieldInput(){
         ArrayList<String> output = new ArrayList<>();
         for (SkillColumn skillColumn:
                 skillGrid) {
@@ -70,7 +72,7 @@ public class SkillPointDistributor {
         return output;
     }
 
-    private ArrayList<Integer> getDisabledSkillColumnIndexes(ArrayList<SkillColumn> skillGrid){
+    private ArrayList<Integer> getDisabledSkillColumnIndexes(){
         ArrayList<Integer> output = new ArrayList<>();
         for (int i = 0; i < skillGrid.size(); i++) {
             if (skillGrid.get(i).isDisabled()){
@@ -80,7 +82,7 @@ public class SkillPointDistributor {
         return output;
     }
 
-    private int countSpentSkillPoints(ArrayList<SkillColumn> skillGrid){
+    private int countSpentSkillPoints(){
         int output = 0;
         for (SkillColumn skillColumn:
                 skillGrid) {
@@ -91,19 +93,18 @@ public class SkillPointDistributor {
         return output;
     }
 
-    public void distributeSkillPoints(ArrayList<SkillColumn> skillGrid, int skillPoints, int maxPyramidHeight) throws Exception {
-        if (maxPyramidHeight > defaultMaxPyramidHeight + 1){
-            throw new Exception("too low defaultMaxPyramidHeight");
-        }
-        skillPointsLeft = skillPoints - countSpentSkillPoints(skillGrid);
-        ArrayList<String> disabledSkillTextFieldInput = getDisabledSkillTextFieldInput(skillGrid);
-        ArrayList<Integer> disabledSkillColumnIndexes = getDisabledSkillColumnIndexes(skillGrid);
-        skillShuffler = new SkillShuffler(disabledSkillTextFieldInput);
-        clearSkillPyramid(disabledSkillColumnIndexes);
+    boolean isPyramidColumnFull(int index){
+        return skillPyramid.get(index).size() >= maxPyramidHeight;
+    }
+
+    public ArrayList<ArrayList<String>> distributeSkillPoints() {
         while (skillPointsLeft > 0){
             ArrayList<Integer> possibleSlots = new ArrayList<>();
             for (int i = 0; i < pyramidWidth; i++) {
-                if (skillPyramid.get(i).size() < maxPyramidHeight && (skillPyramid.get(i).size() + 1) <= skillPointsLeft && !disabledSkillColumnIndexes.contains(i)){
+                int skillCost = skillPyramid.get(i).size() + 1;
+                if (!isPyramidColumnFull(i) &&
+                        skillCost <= skillPointsLeft &&
+                        !disabledSkillColumnIndexes.contains(i)){
                     possibleSlots.add(i);
                 }
             }
@@ -114,6 +115,7 @@ public class SkillPointDistributor {
             skillPointsLeft -= (skillPyramid.get(chosenSkillColumn).size() + 1);
             skillPyramid.get(chosenSkillColumn).add(skillShuffler.nextSkill());
         }
-        sortSkillPyramid(disabledSkillColumnIndexes);
+        sortSkillPyramid();
+        return skillPyramid;
     }
 }

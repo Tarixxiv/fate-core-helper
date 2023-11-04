@@ -1,5 +1,6 @@
 package com.fatecorehelper.controller.util;
 
+import com.fatecorehelper.generator.business.FileWriter;
 import com.fatecorehelper.model.CharacterDTO;
 
 import java.util.ArrayList;
@@ -7,8 +8,8 @@ import java.util.Collections;
 
 public class CharacterSaver {
     CharacterDTO characterDTO;
-    public CharacterSaver(int skillGridWidth){
-        characterDTO = new CharacterDTO(skillGridWidth);
+    public CharacterSaver(){
+        characterDTO = new CharacterDTO();
     }
     private String parseSkills(){
         StringBuilder stringBuilder = new StringBuilder();
@@ -58,5 +59,10 @@ public class CharacterSaver {
 
     public void setCharacter(CharacterDTO characterDTO) {
         this.characterDTO = characterDTO;
+    }
+
+    public void saveToFile(String path){
+        FileWriter fileWriter = new FileWriter();
+        fileWriter.saveToFile(parseCharacter(), path);
     }
 }

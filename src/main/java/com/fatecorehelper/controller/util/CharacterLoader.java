@@ -1,7 +1,9 @@
 package com.fatecorehelper.controller.util;
 
+import com.fatecorehelper.generator.business.FileReader;
 import com.fatecorehelper.model.CharacterDTO;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,9 +11,8 @@ import java.util.List;
 
 public class CharacterLoader {
     List<String> lines;
-    int skillGridWidth = 6;
     int aspectCount = 5;
-    CharacterDTO characterDTO = new CharacterDTO(skillGridWidth);
+    CharacterDTO characterDTO = new CharacterDTO();
 
     private void loadAspects(){
         List<String> aspectLines = lines.subList(0,aspectCount);
@@ -30,10 +31,30 @@ public class CharacterLoader {
             }
         }
     }
-    public CharacterDTO load(String text){
-        lines = Arrays.stream(text.split("\n")).filter(e -> !e.isBlank()).toList();
+
+    private void load(){
         loadAspects();
         loadSkills();
+    }
+
+    public CharacterDTO loadFromString(String text){
+        lines = Arrays.stream(text.split("\n")).filter(e -> !e.isBlank()).toList();
+        load();
         return characterDTO;
     }
+
+
+
+    public CharacterDTO loadFromFile(String path){
+        FileReader fileReader = new FileReader();
+        try{
+            lines = fileReader.parseFileLinesToArray(path);
+            load();
+        } catch (FileNotFoundException e) {
+            characterDTO = new CharacterDTO();
+        }
+        return characterDTO;
+    }
+
+
 }

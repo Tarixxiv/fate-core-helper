@@ -1,29 +1,32 @@
 package com.fatecorehelper.controller;
 
 import com.fatecorehelper.controller.util.CharacterLoader;
+import com.fatecorehelper.controller.util.CharacterSaver;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
-public class CharacterLoaderController {
+import static com.fatecorehelper.FateCoreHelperApp.characterBufferPath;
 
+
+public class CharacterLoaderController {
     public Button loadButton;
     public Button returnButton;
     public TextArea textArea;
     CharacterLoader characterLoader = new CharacterLoader();
+    CharacterSaver characterSaver = new CharacterSaver();
 
     @FXML
     private void initialize() {
+        characterSaver.setCharacter(characterLoader.loadFromFile(characterBufferPath));
+        textArea.setText(characterSaver.parseCharacter());
     }
 
     public void onLoadButtonClick(ActionEvent actionEvent) {
-        SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/GeneratorView.fxml");
-        String textAreaBuffer = textArea.getText();
-
-        sceneChanger.changeScene();
-        GeneratorController generatorController = (GeneratorController) sceneChanger.getController();
-        generatorController.setCharacter(characterLoader.load(textAreaBuffer));
+        characterSaver.setCharacter(characterLoader.loadFromString(textArea.getText()));
+        characterSaver.saveToFile(characterBufferPath);
+        onReturnButtonClick(actionEvent);
     }
 
     public void onReturnButtonClick(ActionEvent actionEvent) {
@@ -31,7 +34,4 @@ public class CharacterLoaderController {
         sceneChanger.changeScene();
     }
 
-    public void setTextAreaText(String textAreaText) {
-        textArea.setText(textAreaText);
-    }
 }

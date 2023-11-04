@@ -12,7 +12,7 @@ public class AspectRandomizer {
     final static String genericAspectPath = "GenericAspects";
     final static String relationsPath = "GenericAspects";
     Random random = new Random();
-    FileParser fileParser = new FileParser();
+    FileReader fileParser = new FileReader();
 
     public ArrayList<String> getUniqueRandomFileLines(String resourcePath, int outputLineCount, ArrayList<String> excludedEntries) {
         ArrayList<String> fileBuffer = fileParser.parseResourceLinesToArray(resourcePath);

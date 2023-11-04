@@ -1,13 +1,16 @@
 package com.fatecorehelper.controller;
 
-import com.fatecorehelper.generator.business.FileParser;
-import com.fatecorehelper.generator.business.SkillEditor;
+import com.fatecorehelper.generator.business.FileReader;
+import com.fatecorehelper.generator.business.FileWriter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class SkillEditorController {
@@ -19,8 +22,8 @@ public class SkillEditorController {
     Button returnButton;
     @FXML
     TextArea textArea;
-    SkillEditor skillEditor = new SkillEditor();
-    FileParser fileParser = new FileParser();
+    FileWriter fileWriter = new FileWriter();
+    FileReader fileReader = new FileReader();
     String skillsPath = "src/main/data/Skills";
 
     @FXML
@@ -29,18 +32,24 @@ public class SkillEditorController {
     }
 
     private void initialiseTextArea(){
-        ArrayList<String> parsedFile = fileParser.parseFileLinesToArray(skillsPath);
+        ArrayList<String> parsedFile;
+        try{
+            parsedFile = fileReader.parseFileLinesToArray(skillsPath);
+        } catch (FileNotFoundException e) {
+            parsedFile = new ArrayList<>(List.of("FileNotFound"));
+        }
+
         textArea.setText(String.join("\n",parsedFile));
     }
 
     public void onReturnButtonClick(ActionEvent actionEvent) {
-        skillEditor.saveToFile(textArea.getText(),skillsPath);
+        fileWriter.saveToFile(textArea.getText(),skillsPath);
         onReturnNoSaveButtonButtonClick(actionEvent);
     }
 
     public void onrResetButtonClick() {
-        ArrayList<String> parsedDefaultSkills = fileParser.parseResourceLinesToArray("DefaultSkills");
-        skillEditor.saveToFile(String.join("\n",parsedDefaultSkills),skillsPath);
+        ArrayList<String> parsedDefaultSkills = fileReader.parseResourceLinesToArray("DefaultSkills");
+        fileWriter.saveToFile(String.join("\n",parsedDefaultSkills),skillsPath);
         initialiseTextArea();
     }
 

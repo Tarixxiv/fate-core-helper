@@ -12,6 +12,11 @@ repositories {
     mavenCentral()
 }
 
+javafx {
+    version = '21'
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
 ext {
     junitVersion = '5.9.2'
 }
@@ -22,19 +27,11 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 application {
-    mainModule = 'com.fatecorehelper'
-    mainClass = 'com.fatecorehelper.FateCoreHelperApp'
-}
-
-javafx {
-    version = '21'
-    modules = ['javafx.controls', 'javafx.fxml']
+    mainClass = 'com.fatecorehelper.Main'
 }
 
 dependencies {
-    implementation('com.dlsc.formsfx:formsfx-core:11.6.0') {
-        exclude(group: 'org.openjfx')
-    }
+    implementation('com.dlsc.formsfx:formsfx-core:11.6.0')
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
@@ -43,7 +40,12 @@ test {
     useJUnitPlatform()
 }
 
-
-jlinkZip {
-    group = 'distribution'
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.fatecorehelper.Main'
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from {
+        configurations.runtimeClasspath .collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

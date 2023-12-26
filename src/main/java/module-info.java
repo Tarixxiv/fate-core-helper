@@ -1,18 +1,8 @@
 module com.fatecorehelper.fatecorehelper {
-    requires javafx.controls;
+    requires javafx.graphics;
     requires javafx.fxml;
-
-    requires com.dlsc.formsfx;
-
-    opens com.fatecorehelper to javafx.fxml;
-    exports com.fatecorehelper;
-    exports com.fatecorehelper.generator.business;
-    exports com.fatecorehelper.model;
-
+    requires javafx.controls;
     opens com.fatecorehelper.controller to javafx.fxml;
-    exports com.fatecorehelper.controller;
-    exports com.fatecorehelper.controller.util;
-    opens com.fatecorehelper.controller.util to javafx.fxml;
-    opens com.fatecorehelper.generator.business to javafx.fxml;
-
+    exports com.fatecorehelper to javafx.graphics;
+    exports com.fatecorehelper.controller to javafx.fxml;
 }

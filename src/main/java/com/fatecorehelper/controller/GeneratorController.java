@@ -1,11 +1,8 @@
 package com.fatecorehelper.controller;
 
-import com.fatecorehelper.generator.business.CharacterLoader;
-import com.fatecorehelper.generator.business.CharacterSaver;
+import com.fatecorehelper.controller.util.SkillGrid;
+import com.fatecorehelper.generator.business.*;
 import com.fatecorehelper.controller.util.GeneratorVBoxCreator;
-import com.fatecorehelper.controller.util.SkillColumn;
-import com.fatecorehelper.generator.business.AspectRandomizer;
-import com.fatecorehelper.generator.business.SkillPointDistributor;
 import com.fatecorehelper.model.CharacterDTO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,12 +30,11 @@ public class GeneratorController {
     Label skillPointsLeftLabel;
     AspectRandomizer aspectRandomizer = new AspectRandomizer();
     CharacterSaver characterSaver = new CharacterSaver();
-    CharacterLoader characterLoader = new CharacterLoader();
     ArrayList<CheckBox> aspectCheckboxes;
     ArrayList<TextField> aspectFields;
-    ArrayList<SkillColumn> skillGrid;
+    SkillGrid skillGrid;
+    SkillShuffler skillShuffler;
     ArrayList<String> disabledAspectTextFieldInput;
-
 
     private void fillCharacterSkills() {
         try{
@@ -47,20 +43,14 @@ public class GeneratorController {
             if (maxPyramidHeight > defaultMaxSkillGridHeight + 1){
                 throw new Exception("too low defaultMaxPyramidHeight");
             }
-            SkillPointDistributor skillPointDistributor = new SkillPointDistributor(skillGrid, maxPyramidHeight, skillPoints);
-            ArrayList<ArrayList<String>> skillPyramid = skillPointDistributor.distributeSkillPoints();
-            for (int i = 0; i < skillGridWidth; i++) {
-                if (!skillGrid.get(i).isDisabled()){
-                    skillGrid.get(i).fillSkills(skillPyramid.get(i));
-                }
-            }
-            skillPointsLeftLabel.setText("SP left after generation : " + skillPointDistributor.getSkillPointsLeft());
+            SkillDistributor skillDistributor = new SkillDistributor(skillGridWidth, maxPyramidHeight, skillShuffler);
+            ArrayList<ArrayList<String>> skillPyramid = skillDistributor.distributeSkillPoints(skillGrid.getDisabledSkillColumnIndexes(), skillPoints - skillGrid.countSpentSkillPoints());
+            skillGrid.setSkillGridFromArray(skillPyramid);
+
+            skillPointsLeftLabel.setText("SP left after generation : " + (skillPoints - skillGrid.countSpentSkillPoints()));
         } catch (Exception e) {
             skillPointsLeftLabel.setText(e.getMessage());
         }
-
-
-
     }
 
     private void fillCharacterAspects() {
@@ -71,7 +61,6 @@ public class GeneratorController {
             }
         }
     }
-    
 
     private void fillGeneratedCharacterTextFields(){
         fillCharacterAspects();
@@ -80,6 +69,7 @@ public class GeneratorController {
 
     @FXML
     private void initialize() {
+        CharacterLoader characterLoader = new CharacterLoader();
         skillPointsTextField.setText(String.valueOf(defaultSkillPoints));
         skillCapTextField.setText(String.valueOf(defaultMaxSkillGridHeight));
         GeneratorVBoxCreator generatorVBoxCreator = new GeneratorVBoxCreator(defaultMaxSkillGridHeight, skillGridWidth,aspectRandomizer.getAspectCount());
@@ -87,18 +77,18 @@ public class GeneratorController {
         disabledAspectTextFieldInput = generatorVBoxCreator.getDisabledAspectTextFieldInput();
         aspectFields = generatorVBoxCreator.getAspectFields();
         aspectCheckboxes = generatorVBoxCreator.getAspectCheckboxes();
-        skillGrid = generatorVBoxCreator.getSkillGrid();
-
+        skillGrid = new SkillGrid(generatorVBoxCreator.getSkillGrid());
+        skillShuffler = new SkillShuffler(skillGrid.getDisabledSkillTextFieldInput());
         setTextFields(characterLoader.loadFromFile(characterBufferPath));
+
+
     }
 
     public void setTextFields(CharacterDTO characterDTO){
         for (int i = 0; i < characterDTO.aspects.size(); i++) {
             aspectFields.get(i).setText(characterDTO.aspects.get(i));
         }
-        for (int i = 0; i < skillGrid.size(); i++) {
-            skillGrid.get(i).fillSkills(characterDTO.skillGrid.get(i));
-        }
+        skillGrid.setSkillGridFromArray(characterDTO.skillGrid);
     }
 
     @FXML
@@ -127,8 +117,8 @@ public class GeneratorController {
 
     public CharacterDTO createCharacter(){
         CharacterDTO characterDTO = new CharacterDTO();
-        characterDTO.aspects = new ArrayList<>(aspectFields.stream().map(TextField::getText).toList()) ;
-        characterDTO.skillGrid = new ArrayList<>(skillGrid.stream().map(SkillColumn::getNonBlankTextFieldsText).toList());
+        characterDTO.aspects = new ArrayList<>(aspectFields.stream().map(TextField::getText).toList());
+        characterDTO.skillGrid = skillGrid.getSkillGridArray();
         return characterDTO;
     }
 

@@ -11,7 +11,7 @@ public class SkillShuffler {
     int currentSkillIndex = 0;
     String skillsPath = "DefaultSkills";
 
-    SkillShuffler(ArrayList<String> disabledSkillTextFieldInput) {
+    public SkillShuffler(ArrayList<String> disabledSkillTextFieldInput) {
         readSkillFile();
         for (String skill:
                 disabledSkillTextFieldInput) {

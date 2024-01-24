@@ -22,7 +22,7 @@ public class CharacterLoader {
         Collections.reverse(skillLinesReversed);
         for (String line:
                 skillLinesReversed) {
-            ArrayList<String> skillRow = new ArrayList<>(Arrays.asList(line.split(" *\\| *"))) ;
+            ArrayList<String> skillRow = new ArrayList<>(Arrays.asList(line.split(" *\\| *")));
             skillRow.remove(0);
             for (int i = 0; i < skillRow.size(); i++) {
                 characterDTO.skillGrid.get(i).add(skillRow.get(i));

@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 public class FateCoreHelperApp extends Application {
     int stageHeight = 600;
     int stageWidth = 1000;
-    public static String characterBufferPath = "src/main/data/CharacterBuffer";
     public static int skillGridWidth = 6;
     @Override
     public void start(Stage stage) throws Exception {

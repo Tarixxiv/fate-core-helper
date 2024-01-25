@@ -1,5 +1,7 @@
 package com.fatecorehelper.generator.business;
 
+import com.fatecorehelper.model.Cache;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +14,13 @@ public class SkillShuffler {
     String skillsPath = "DefaultSkills";
 
     public SkillShuffler(ArrayList<String> disabledSkillTextFieldInput) {
-        readSkillFile();
+        if (Cache.gerInstance().skills.isPresent()){
+            skills = Cache.gerInstance().skills.get();
+            System.out.println(skills);
+        }else {
+            readSkillFile();
+        }
+
         for (String skill:
                 disabledSkillTextFieldInput) {
             while(skills.remove(skill));

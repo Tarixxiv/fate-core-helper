@@ -22,6 +22,14 @@ public class SkillColumn {
         this.checkBox = checkBox;
     }
 
+    public void disable(){
+        checkBox.setSelected(true);
+        for (TextField textField:
+                textFields) {
+            textField.setDisable(checkBox.isSelected());
+        }
+    }
+
     private void clear(){
         for (TextField textField:
                 textFields) {

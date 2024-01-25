@@ -11,7 +11,7 @@ public class SkillGrid {
     }
 
     public ArrayList<ArrayList<String>> getSkillGridArray(){
-        return new ArrayList<ArrayList<String>>(skillColumns.stream().map(SkillColumn::getNonBlankTextFieldsText).toList());
+        return new ArrayList<>(skillColumns.stream().map(SkillColumn::getNonBlankTextFieldsText).toList());
     }
 
     public void setSkillGridFromArray(ArrayList<ArrayList<String>> array){
@@ -41,14 +41,19 @@ public class SkillGrid {
         return output;
     }
 
-    public int countSpentSkillPoints(){
-        int output = 0;
-        for (SkillColumn skillColumn:
-                skillColumns) {
-            if (skillColumn.isDisabled()){
-                output += skillColumn.countSkillPointsInColumn();
-            }
+    public void setDisabledSkillColumns(ArrayList<Integer> indexes){
+        for (int index:
+             indexes) {
+            skillColumns.get(index).disable();
         }
-        return output;
+    }
+
+    public int countSpentSkillPoints(){
+        return skillColumns.stream().mapToInt(SkillColumn::countSkillPointsInColumn).sum();
+    }
+
+    public int countDisabledSkillPoints(){
+        return skillColumns.stream().filter(SkillColumn::isDisabled)
+                .mapToInt(SkillColumn::countSkillPointsInColumn).sum();
     }
 }

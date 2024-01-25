@@ -4,6 +4,7 @@ import com.fatecorehelper.controller.util.SkillGrid;
 import com.fatecorehelper.generator.business.*;
 import com.fatecorehelper.controller.util.GeneratorVBoxCreator;
 import com.fatecorehelper.model.CharacterDTO;
+import com.fatecorehelper.model.Cache;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -13,8 +14,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import java.util.ArrayList;
-
-import static com.fatecorehelper.FateCoreHelperApp.characterBufferPath;
+import java.util.Optional;
 
 public class GeneratorController {
     public int defaultSkillPoints = 20;
@@ -28,13 +28,13 @@ public class GeneratorController {
     TextField skillCapTextField;
     @FXML
     Label skillPointsLeftLabel;
+    @FXML
+    Label errorLabel;
     AspectRandomizer aspectRandomizer = new AspectRandomizer();
     CharacterSaver characterSaver = new CharacterSaver();
     ArrayList<CheckBox> aspectCheckboxes;
     ArrayList<TextField> aspectFields;
     SkillGrid skillGrid;
-    SkillShuffler skillShuffler;
-    ArrayList<String> disabledAspectTextFieldInput;
 
     private void fillCharacterSkills() {
         try{
@@ -43,17 +43,29 @@ public class GeneratorController {
             if (maxPyramidHeight > defaultMaxSkillGridHeight + 1){
                 throw new Exception("too low defaultMaxPyramidHeight");
             }
-            SkillDistributor skillDistributor = new SkillDistributor(skillGridWidth, maxPyramidHeight, skillShuffler);
-            ArrayList<ArrayList<String>> skillPyramid = skillDistributor.distributeSkillPoints(skillGrid.getDisabledSkillColumnIndexes(), skillPoints - skillGrid.countSpentSkillPoints());
+            SkillDistributor skillDistributor = new SkillDistributor(skillGridWidth,
+                    maxPyramidHeight,
+                    new SkillShuffler(skillGrid.getDisabledSkillTextFieldInput()));
+            ArrayList<ArrayList<String>> skillPyramid = skillDistributor
+                    .distributeSkillPoints(
+                    skillGrid.getDisabledSkillColumnIndexes(),
+                            skillPoints - skillGrid.countDisabledSkillPoints());
             skillGrid.setSkillGridFromArray(skillPyramid);
 
-            skillPointsLeftLabel.setText("SP left after generation : " + (skillPoints - skillGrid.countSpentSkillPoints()));
+            skillPointsLeftLabel.setText("SP left after generation : " +
+                    (skillPoints - skillGrid.countSpentSkillPoints()));
         } catch (Exception e) {
             skillPointsLeftLabel.setText(e.getMessage());
         }
     }
 
     private void fillCharacterAspects() {
+        ArrayList<String> disabledAspectTextFieldInput = new ArrayList<>();
+        for (int i = 0; i < aspectCheckboxes.size(); i++) {
+            if (!aspectCheckboxes.get(i).isSelected()){
+                disabledAspectTextFieldInput.add(aspectFields.get(i).getText());
+            }
+        }
         ArrayList<String> aspects = aspectRandomizer.generateAspects(disabledAspectTextFieldInput);
         for (int i = 0; i < aspectCheckboxes.size(); i++) {
             if (!aspectCheckboxes.get(i).isSelected()){
@@ -69,19 +81,17 @@ public class GeneratorController {
 
     @FXML
     private void initialize() {
-        CharacterLoader characterLoader = new CharacterLoader();
         skillPointsTextField.setText(String.valueOf(defaultSkillPoints));
         skillCapTextField.setText(String.valueOf(defaultMaxSkillGridHeight));
-        GeneratorVBoxCreator generatorVBoxCreator = new GeneratorVBoxCreator(defaultMaxSkillGridHeight, skillGridWidth,aspectRandomizer.getAspectCount());
-        characterVBox.getChildren().addAll(generatorVBoxCreator.createAspectFieldsAndCheckboxes(),generatorVBoxCreator.createSkillFieldsAndCheckBoxes());
-        disabledAspectTextFieldInput = generatorVBoxCreator.getDisabledAspectTextFieldInput();
+        GeneratorVBoxCreator generatorVBoxCreator = new GeneratorVBoxCreator(
+                defaultMaxSkillGridHeight, skillGridWidth,aspectRandomizer.getAspectCount());
+        characterVBox.getChildren().addAll(
+                generatorVBoxCreator.createAspectFieldsAndCheckboxes(),
+                generatorVBoxCreator.createSkillFieldsAndCheckBoxes());
         aspectFields = generatorVBoxCreator.getAspectFields();
         aspectCheckboxes = generatorVBoxCreator.getAspectCheckboxes();
         skillGrid = new SkillGrid(generatorVBoxCreator.getSkillGrid());
-        skillShuffler = new SkillShuffler(skillGrid.getDisabledSkillTextFieldInput());
-        setTextFields(characterLoader.loadFromFile(characterBufferPath));
-
-
+        loadCache();
     }
 
     public void setTextFields(CharacterDTO characterDTO){
@@ -100,8 +110,8 @@ public class GeneratorController {
         }
     }
 
-    public void onEditSkillsButtonClick(ActionEvent actionEvent) {
-        characterSaver.saveToFile(createCharacter(),characterBufferPath);
+    public void onEditSkillsButtonClick(ActionEvent actionEvent){
+        fillCache();
         SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/SkillEditorView.fxml");
         sceneChanger.changeScene();
     }
@@ -123,10 +133,54 @@ public class GeneratorController {
     }
 
     public void loadButtonClick(ActionEvent actionEvent) {
-        CharacterDTO characterDTO = createCharacter();
-        characterSaver.saveToFile(characterDTO,characterBufferPath);
+        fillCache();
         SceneChanger sceneChanger = new SceneChanger(actionEvent,"fxml/CharacterLoaderView.fxml");
         sceneChanger.changeScene();
+    }
+
+    private ArrayList<Integer> getDisabledAspectIndexes(){
+        ArrayList<Integer> output = new ArrayList<>();
+        for (int i = 0; i < aspectCheckboxes.size(); i++) {
+            if (aspectCheckboxes.get(i).isSelected()){
+                output.add(i);
+            }
+        }
+        return output;
+    }
+
+    private void disableAspectFields(ArrayList<Integer> indexes){
+        for (int i:
+             indexes) {
+            aspectFields.get(i).setDisable(true);
+            aspectCheckboxes.get(i).setSelected(true);
+        }
+    }
+
+    private void setSkillPointsTextFieldText(Integer value){
+        skillPointsTextField.setText(value.toString());
+    }
+
+    private void setSkillCapTextFieldText(Integer value){
+        skillCapTextField.setText(value.toString());
+    }
+
+    private void loadCache(){
+        Cache cache = Cache.gerInstance();
+        cache.characterDTO.ifPresent(this::setTextFields);
+        cache.disabledAspectIndexes.ifPresent(skillGrid::setDisabledSkillColumns);
+        cache.disabledAspectIndexes.ifPresent(this::disableAspectFields);
+        cache.skillPoints.ifPresent(this::setSkillPointsTextFieldText);
+        cache.skillCap.ifPresent(this::setSkillCapTextFieldText);
+
+    }
+
+    private void fillCache(){
+        Cache cache = Cache.gerInstance();
+        cache.characterDTO = Optional.of(createCharacter());
+        cache.disabledSkillColumnIndexes = Optional.of(skillGrid.getDisabledSkillColumnIndexes());
+        cache.disabledAspectIndexes = Optional.of(getDisabledAspectIndexes());
+        cache.skillPoints = Optional.of(Integer.parseInt(skillPointsTextField.getText()));
+        cache.skillCap = Optional.of(Integer.parseInt(skillCapTextField.getText()));
     }
 }
 

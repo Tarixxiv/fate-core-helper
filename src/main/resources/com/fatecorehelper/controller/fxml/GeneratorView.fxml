@@ -57,4 +57,5 @@
     </HBox>
    <VBox fx:id="characterVBox" prefHeight="200.0" prefWidth="100.0" />
    <Label fx:id="skillPointsLeftLabel"/>
+    <Label fx:id="errorLabel"/>
 </VBox>

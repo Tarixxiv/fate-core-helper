@@ -1,6 +1,7 @@
 package com.fatecorehelper.generator.business;
 import com.fatecorehelper.model.CharacterDTO;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -53,7 +54,7 @@ public class CharacterSaver {
         return parseAspects() + "\n" + parseSkills();
     }
 
-    public void saveToFile(CharacterDTO characterDTO, String path){
+    public void saveToFile(CharacterDTO characterDTO, String path) throws IOException {
         this.characterDTO = characterDTO;
         FileWriter fileWriter = new FileWriter();
         fileWriter.saveToFile(parseCharacter(characterDTO), path);

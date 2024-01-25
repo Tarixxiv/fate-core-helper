@@ -2,6 +2,7 @@ package com.fatecorehelper.controller;
 
 import com.fatecorehelper.generator.business.FileReader;
 import com.fatecorehelper.generator.business.FileWriter;
+import com.fatecorehelper.model.Cache;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -9,11 +10,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class SkillEditorController {
+    public Button returnNoSaveButton;
     @FXML
     Button resetButton;
     @FXML
@@ -43,13 +47,23 @@ public class SkillEditorController {
     }
 
     public void onReturnButtonClick(ActionEvent actionEvent) {
-        fileWriter.saveToFile(textArea.getText(),skillsPath);
+        Cache.gerInstance().skills = Optional.of(new ArrayList<>(
+                List.of(textArea.getText().split("\n"))
+        ));
+        try{
+            fileWriter.saveToFile(textArea.getText(),skillsPath);
+        }
+        catch (IOException ignored){
+
+        }
         onReturnNoSaveButtonButtonClick(actionEvent);
     }
 
-    public void onrResetButtonClick() {
+    public void onResetButtonClick() {
         ArrayList<String> parsedDefaultSkills = fileReader.parseResourceLinesToArray("DefaultSkills");
-        fileWriter.saveToFile(String.join("\n",parsedDefaultSkills),skillsPath);
+        try {
+            fileWriter.saveToFile(String.join("\n",parsedDefaultSkills),skillsPath);
+        } catch (IOException ignored) {}
         initialiseTextArea();
     }
 

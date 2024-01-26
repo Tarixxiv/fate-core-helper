@@ -167,7 +167,7 @@ public class GeneratorController {
     private void loadCache(){
         Cache cache = Cache.gerInstance();
         cache.characterDTO.ifPresent(this::setTextFields);
-        cache.disabledAspectIndexes.ifPresent(skillGrid::setDisabledSkillColumns);
+        cache.disabledSkillColumnIndexes.ifPresent(skillGrid::setDisabledSkillColumns);
         cache.disabledAspectIndexes.ifPresent(this::disableAspectFields);
         cache.skillPoints.ifPresent(this::setSkillPointsTextFieldText);
         cache.skillCap.ifPresent(this::setSkillCapTextFieldText);

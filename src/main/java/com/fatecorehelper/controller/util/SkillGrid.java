@@ -16,7 +16,10 @@ public class SkillGrid {
 
     public void setSkillGridFromArray(ArrayList<ArrayList<String>> array){
         for (int i = 0; i < skillColumns.size(); i++) {
-            skillColumns.get(i).fillSkills(array.get(i));
+            SkillColumn skillColumn = skillColumns.get(i);
+            if (!skillColumn.isDisabled()){
+                skillColumns.get(i).fillSkills(array.get(i));
+            }
         }
     }
 

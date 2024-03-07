@@ -1,6 +1,6 @@
 # Fate Core Helper
 ## Description
-A simple javafx destkop app for generating Fate Core characters.
+A javafx destkop app for generating characters for tabletop rpgs in Fate Core system.
 App pulls random lines from resource files to fill aspect fields. 
 Skill are pulled from in-app customizable list and arranged in a pyramid according to Fate Core RPG system rules.
  
